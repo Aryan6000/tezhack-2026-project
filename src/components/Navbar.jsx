@@ -1,45 +1,70 @@
 import { useState } from 'react';
-import { Building2, FileText, Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Building2, Menu } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Report', path: '/report' },
+    { name: 'Explore', path: '/explore' },
+    { name: 'Track Status', path: '/track' },
+    { name: 'About', path: '#' },
+  ];
 
   return (
-    <nav className="border-b bg-white sticky top-0 z-50">
+    <nav className="bg-white sticky top-0 z-50 border-b border-gray-100/50 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="bg-blue-600 text-white p-2 rounded-lg">
-              <Building2 size={24} />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg leading-tight">Public Issue Resolution Tracker</h1>
-              <p className="text-xs text-gray-500 hidden sm:block">Official Municipal Redressal Portal</p>
-            </div>
+        <div className="flex items-center justify-between h-[72px]">
+          
+          {/* Logo - Left */}
+          <Link to="/" className="flex items-center gap-2.5 shrink-0">
+            <Building2 size={24} className="text-slate-900" strokeWidth={2.5} />
+            <span className="font-bold text-lg tracking-wide text-slate-900">PIRT</span>
           </Link>
           
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-900 font-medium">Home</Link>
-            <Link to="/report" className="text-gray-500 hover:text-gray-900">Report an Issue</Link>
-            <Link to="/explore" className="text-gray-500 hover:text-gray-900">Explore Issues</Link>
-            <Link to="#" className="text-gray-500 hover:text-gray-900">Track Status</Link>
-            <Link to="#" className="text-gray-500 hover:text-gray-900">About</Link>
+          {/* Nav Links - Center (Desktop) */}
+          <div className="hidden md:flex flex-1 justify-center items-center">
+            <div className="flex items-center space-x-1">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
+                
+                return (
+                  <Link 
+                    key={link.name}
+                    to={link.path} 
+                    className={`relative px-4 py-6 text-sm font-semibold transition-colors ${
+                      isActive 
+                        ? 'text-slate-900' 
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    {link.name}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-slate-900 rounded-t-full"></span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/auth" className="text-gray-600 font-medium hover:text-slate-900 transition-colors">
-              Sign In
+          {/* Actions - Right (Desktop) */}
+          <div className="hidden md:flex items-center space-x-6 shrink-0">
+            <Link to="/auth" className="text-slate-600 text-sm font-semibold hover:text-slate-900 transition-colors">
+              Log in
             </Link>
-            <Link to="/report" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2">
-              <FileText size={16} />
-              Report Issue
+            <Link to="/report" className="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm">
+              File Report
             </Link>
           </div>
 
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button 
-              className="p-2 text-gray-600"
+              className="p-2 text-slate-600 hover:text-slate-900 transition-colors rounded-md"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <Menu size={24} />
@@ -50,18 +75,42 @@ const Navbar = () => {
       
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t bg-white">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-900">Home</Link>
-            <Link to="/report" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Report an Issue</Link>
-            <Link to="/explore" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Explore Issues</Link>
-            <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Track Status</Link>
-            <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">About</Link>
-            <Link to="/auth" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900 border-t border-gray-100 mt-2 pt-4">Sign In / Register</Link>
-            <Link to="/report" className="mt-2 w-full bg-slate-900 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center gap-2">
-              <FileText size={16} />
-              Report Issue
-            </Link>
+        <div className="md:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
+          <div className="px-4 pt-2 pb-4 space-y-1">
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
+              return (
+                <Link 
+                  key={link.name}
+                  to={link.path} 
+                  className={`block px-3 py-3 text-base font-semibold rounded-lg ${
+                    isActive 
+                      ? 'bg-slate-50 text-slate-900' 
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
+            
+            <div className="border-t border-gray-100 mt-4 pt-4 flex flex-col gap-3">
+              <Link 
+                to="/auth" 
+                className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-slate-900 text-center"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Log in
+              </Link>
+              <Link 
+                to="/report" 
+                className="w-full bg-slate-900 text-white px-4 py-3 rounded-lg text-base font-semibold text-center hover:bg-black transition-colors shadow-sm"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                File Report
+              </Link>
+            </div>
           </div>
         </div>
       )}
@@ -70,4 +119,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

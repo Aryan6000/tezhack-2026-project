@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import ReportIssue from './pages/ReportIssue';
 import ExploreIssues from './pages/ExploreIssues';
 import Auth from './pages/Auth';
+import TrackStatus from './pages/TrackStatus';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/report" element={<ReportIssue />} />
             <Route path="/explore" element={<ExploreIssues />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/track" element={<TrackStatus />} />
           </Routes>
         </div>
         <Footer />
