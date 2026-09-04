@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Search, FileText, Menu } from 'lucide-react';
+import { Building2, FileText, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -28,9 +28,9 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            <button className="p-2 text-gray-400 hover:text-gray-600">
-              <Search size={20} />
-            </button>
+            <Link to="/auth" className="text-gray-600 font-medium hover:text-slate-900 transition-colors">
+              Sign In
+            </Link>
             <Link to="/report" className="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2">
               <FileText size={16} />
               Report Issue
@@ -57,7 +57,8 @@ const Navbar = () => {
             <Link to="/explore" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Explore Issues</Link>
             <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Track Status</Link>
             <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">About</Link>
-            <Link to="/report" className="mt-4 w-full bg-slate-900 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center gap-2">
+            <Link to="/auth" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900 border-t border-gray-100 mt-2 pt-4">Sign In / Register</Link>
+            <Link to="/report" className="mt-2 w-full bg-slate-900 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center gap-2">
               <FileText size={16} />
               Report Issue
             </Link>
