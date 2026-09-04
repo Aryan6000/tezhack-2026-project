@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -7,20 +8,37 @@ import ExploreIssues from './pages/ExploreIssues';
 import Auth from './pages/Auth';
 import TrackStatus from './pages/TrackStatus';
 
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="flex-grow flex flex-col"
+      >
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/report" element={<ReportIssue />} />
+          <Route path="/explore" element={<ExploreIssues />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/track" element={<TrackStatus />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
 function App() {
   return (
     <Router>
-      <div className="min-h-screen font-sans bg-white text-gray-900 flex flex-col">
+      <div className="min-h-screen font-sans bg-white text-gray-900 flex flex-col overflow-hidden">
         <Navbar />
-        <div className="flex-grow flex flex-col">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/report" element={<ReportIssue />} />
-            <Route path="/explore" element={<ExploreIssues />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/track" element={<TrackStatus />} />
-          </Routes>
-        </div>
+        <AnimatedRoutes />
         <Footer />
       </div>
     </Router>

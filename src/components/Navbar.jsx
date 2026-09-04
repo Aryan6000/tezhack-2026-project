@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Building2, Menu } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,8 +22,8 @@ const Navbar = () => {
           
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <Building2 size={24} className="text-slate-900" strokeWidth={2.5} />
-            <span className="font-bold text-lg tracking-wide text-slate-900">PIRT</span>
+            <Building2 size={24} className="text-blue-600" strokeWidth={2.5} />
+            <span className="font-bold text-lg tracking-wide text-blue-600">PIRT</span>
           </Link>
           
           {/* Nav Links - Center (Desktop) */}
@@ -37,13 +38,17 @@ const Navbar = () => {
                     to={link.path} 
                     className={`relative px-4 py-6 text-sm font-semibold transition-colors ${
                       isActive 
-                        ? 'text-slate-900' 
-                        : 'text-slate-500 hover:text-slate-900'
+                        ? 'text-blue-600' 
+                        : 'text-slate-500 hover:text-blue-600'
                     }`}
                   >
                     {link.name}
                     {isActive && (
-                      <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-slate-900 rounded-t-full"></span>
+                      <motion.span 
+                        layoutId="nav-underline"
+                        className="absolute bottom-0 left-4 right-4 h-0.5 bg-blue-600 rounded-t-full"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
                     )}
                   </Link>
                 );
@@ -53,10 +58,10 @@ const Navbar = () => {
 
           {/* Actions - Right (Desktop) */}
           <div className="hidden md:flex items-center space-x-6 shrink-0">
-            <Link to="/auth" className="text-slate-600 text-sm font-semibold hover:text-slate-900 transition-colors">
+            <Link to="/auth" className="text-slate-600 text-sm font-semibold hover:text-blue-600 transition-colors">
               Log in
             </Link>
-            <Link to="/report" className="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm">
+            <Link to="/report" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm">
               File Report
             </Link>
           </div>
@@ -64,7 +69,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button 
-              className="p-2 text-slate-600 hover:text-slate-900 transition-colors rounded-md"
+              className="p-2 text-slate-600 hover:text-blue-600 transition-colors rounded-md"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <Menu size={24} />
@@ -85,8 +90,8 @@ const Navbar = () => {
                   to={link.path} 
                   className={`block px-3 py-3 text-base font-semibold rounded-lg ${
                     isActive 
-                      ? 'bg-slate-50 text-slate-900' 
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-blue-50 text-blue-600' 
+                      : 'text-slate-600 hover:bg-blue-50 hover:text-blue-600'
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -98,14 +103,14 @@ const Navbar = () => {
             <div className="border-t border-gray-100 mt-4 pt-4 flex flex-col gap-3">
               <Link 
                 to="/auth" 
-                className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-slate-900 text-center"
+                className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-blue-600 text-center"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Log in
               </Link>
               <Link 
                 to="/report" 
-                className="w-full bg-slate-900 text-white px-4 py-3 rounded-lg text-base font-semibold text-center hover:bg-black transition-colors shadow-sm"
+                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-base font-semibold text-center hover:bg-blue-700 transition-colors shadow-sm"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 File Report
