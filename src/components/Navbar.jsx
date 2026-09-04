@@ -22,7 +22,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-900 font-medium">Home</Link>
             <Link to="/report" className="text-gray-500 hover:text-gray-900">Report an Issue</Link>
-            <Link to="#" className="text-gray-500 hover:text-gray-900">Explore Issues</Link>
+            <Link to="/explore" className="text-gray-500 hover:text-gray-900">Explore Issues</Link>
             <Link to="#" className="text-gray-500 hover:text-gray-900">Track Status</Link>
             <Link to="#" className="text-gray-500 hover:text-gray-900">About</Link>
           </div>
@@ -54,7 +54,7 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-900">Home</Link>
             <Link to="/report" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Report an Issue</Link>
-            <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Explore Issues</Link>
+            <Link to="/explore" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Explore Issues</Link>
             <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">Track Status</Link>
             <Link to="#" className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-900">About</Link>
             <Link to="/report" className="mt-4 w-full bg-slate-900 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center gap-2">
