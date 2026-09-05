@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Search, ArrowRight, User, LogOut } from 'lucide-react';
+import { Building2, Menu, X, Search, ArrowRight, LogOut, User } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
