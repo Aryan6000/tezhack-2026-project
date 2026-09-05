@@ -253,6 +253,13 @@ const ReportIssue = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
+    // Prevent premature submission if user hits Enter in an input on Step 1 or 2
+    if (currentStep !== totalSteps) {
+      handleNext();
+      return;
+    }
+
     setError('');
     if (!user)               { setShowAuthModal(true); return; }
     if (!title.trim())       { setError('Please enter a title.'); return; }
@@ -734,12 +741,12 @@ const ReportIssue = () => {
                   </button>
                 )}
                 {currentStep < totalSteps ? (
-                  <button type="button" onClick={handleNext}
+                  <button key="next" type="button" onClick={handleNext}
                     className="flex-1 sm:flex-none w-full sm:w-auto px-8 py-3 border border-transparent shadow-sm text-sm font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors">
                     Continue to Step {currentStep + 1}
                   </button>
                 ) : (
-                  <button type="submit" disabled={submitting}
+                  <button key="submit" type="submit" disabled={submitting}
                     className="flex-1 sm:flex-none w-full sm:w-auto px-8 py-3 border border-transparent shadow-sm text-sm font-bold rounded-lg text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-60 flex items-center justify-center gap-2 transition-colors">
                     {submitting ? <><Loader2 size={16} className="animate-spin" /> Submitting...</> : <><CheckCircle2 size={18} /> Submit Issue & Get Token #</>}
                   </button>
