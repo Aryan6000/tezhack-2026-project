@@ -585,12 +585,13 @@ const ReportIssue = () => {
                 {/* Section 3 — Location */}
                 <div className="p-6 md:p-8 relative">
                   <div className="absolute left-0 top-8 bottom-0 w-1 bg-blue-600 rounded-r-md hidden md:block" />
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                  <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                       Location & Geo-Tag
                     </h2>
+                    {/* Desktop GPS button */}
                     <button type="button" onClick={detectGPS} disabled={gpsLoading}
-                      className="flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold border border-blue-200 transition-colors disabled:opacity-60">
+                      className="hidden sm:flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold border border-blue-200 transition-colors disabled:opacity-60">
                       {gpsLoading ? <Loader2 size={16} className="animate-spin" /> : <Crosshair size={16} />}
                       {gpsLoading ? 'Detecting...' : 'Detect GPS'}
                     </button>
@@ -608,6 +609,13 @@ const ReportIssue = () => {
                           className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                       </div>
                     </div>
+                    
+                    {/* Mobile GPS button */}
+                    <button type="button" onClick={detectGPS} disabled={gpsLoading}
+                      className="flex sm:hidden w-full items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-3.5 rounded-xl text-sm font-bold border border-blue-200 transition-colors disabled:opacity-60">
+                      {gpsLoading ? <Loader2 size={16} className="animate-spin" /> : <Crosshair size={16} />}
+                      {gpsLoading ? 'Detecting...' : 'Detect GPS'}
+                    </button>
                     <div className="h-64 bg-gray-200 rounded-lg border border-gray-300 relative overflow-hidden z-0">
                       <MapContainer
                         center={lat && lng ? [lat, lng] : [12.9716, 77.5946]}

@@ -42,47 +42,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Vertical Divider 1 */}
-          <div className="hidden lg:block w-px bg-gray-200 mx-4"></div>
 
-          {/* Column 2: Explore */}
-          <div className="lg:w-[15%] px-2 lg:px-6 mb-8 lg:mb-0">
-            <h4 className="font-bold text-[#0f172a] mb-6 text-[15px]">Explore</h4>
-            <ul className="space-y-4 text-[14px] text-slate-500 font-medium">
-              <li><Link to="/report" className="hover:text-blue-600 transition-colors">Report an Issue</Link></li>
-              <li><Link to="/track" className="hover:text-blue-600 transition-colors">Track Status</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Issue Categories</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">How It Works</Link></li>
-            </ul>
-          </div>
-
-          {/* Vertical Divider 2 */}
-          <div className="hidden lg:block w-px bg-gray-200 mx-4"></div>
-
-          {/* Column 3: Resources */}
-          <div className="lg:w-[15%] px-2 lg:px-6 mb-8 lg:mb-0">
-            <h4 className="font-bold text-[#0f172a] mb-6 text-[15px]">Resources</h4>
-            <ul className="space-y-4 text-[14px] text-slate-500 font-medium">
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Citizen Charter</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">SLA Timelines</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Grievance Redressal Act</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">FAQs</Link></li>
-            </ul>
-          </div>
-
-          {/* Vertical Divider 3 */}
-          <div className="hidden lg:block w-px bg-gray-200 mx-4"></div>
-
-          {/* Column 4: About */}
-          <div className="lg:w-[15%] px-2 lg:px-6">
-            <h4 className="font-bold text-[#0f172a] mb-6 text-[15px]">About</h4>
-            <ul className="space-y-4 text-[14px] text-slate-500 font-medium">
-              <li><Link to="/about" className="hover:text-blue-600 transition-colors">Our Mission</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Terms of Service</Link></li>
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Accessibility</Link></li>
-            </ul>
-          </div>
 
 
 
