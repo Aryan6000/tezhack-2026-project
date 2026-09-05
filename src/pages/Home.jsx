@@ -32,7 +32,7 @@ const Hero = () => {
         <div className="absolute bottom-20 -right-20 w-[600px] h-[600px] rounded-full border-[80px] border-[#f0f5ff] opacity-50" />
       </div>
       
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column */}
           <div className="max-w-2xl">
