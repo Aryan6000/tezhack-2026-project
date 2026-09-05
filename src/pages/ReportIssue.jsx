@@ -25,12 +25,50 @@ const CATEGORIES = [
   { id: 'noise', label: 'Pollution & Noise', icon: VolumeX }
 ];
 
-const SUB_CATEGORIES = [
-  { id: 'sub-roads-1', label: 'Deep Pothole / Road Cave-in' },
-  { id: 'sub-roads-2', label: 'Broken Footpath' },
-  { id: 'sub-waste-1', label: 'Garbage Dump Not Cleared' },
-  { id: 'sub-waste-2', label: 'Dead Animal' },
-];
+const SUB_CATEGORIES = {
+  roads: [
+    { id: 'roads-1', label: 'Deep Pothole / Road Cave-in' },
+    { id: 'roads-2', label: 'Broken Footpath / Pavement' },
+    { id: 'roads-3', label: 'Damaged Road Divider' },
+    { id: 'roads-4', label: 'Waterlogging on Road' },
+    { id: 'roads-5', label: 'Illegal Road Obstruction' },
+  ],
+  waste: [
+    { id: 'waste-1', label: 'Garbage Dump Not Cleared' },
+    { id: 'waste-2', label: 'Dead Animal on Road' },
+    { id: 'waste-3', label: 'Overflowing Dustbin' },
+    { id: 'waste-4', label: 'Open Burning of Waste' },
+    { id: 'waste-5', label: 'Sewage Overflow on Street' },
+  ],
+  water: [
+    { id: 'water-1', label: 'Burst Water Pipeline' },
+    { id: 'water-2', label: 'No Water Supply' },
+    { id: 'water-3', label: 'Contaminated Water' },
+    { id: 'water-4', label: 'Clogged / Blocked Drain' },
+    { id: 'water-5', label: 'Manhole Open / Uncovered' },
+  ],
+  power: [
+    { id: 'power-1', label: 'Street Light Not Working' },
+    { id: 'power-2', label: 'Dangling / Broken Wire' },
+    { id: 'power-3', label: 'Transformer Fault' },
+    { id: 'power-4', label: 'Frequent Power Cuts' },
+    { id: 'power-5', label: 'Electric Pole Damaged' },
+  ],
+  parks: [
+    { id: 'parks-1', label: 'Dangerous Broken Tree Branch' },
+    { id: 'parks-2', label: 'Vandalized Park Equipment' },
+    { id: 'parks-3', label: 'Uprooted / Fallen Tree' },
+    { id: 'parks-4', label: 'Broken Park Benches / Lights' },
+    { id: 'parks-5', label: 'Encroachment on Public Land' },
+  ],
+  noise: [
+    { id: 'noise-1', label: 'Illegal Loudspeaker / DJ' },
+    { id: 'noise-2', label: 'Construction Noise at Night' },
+    { id: 'noise-3', label: 'Factory / Industrial Noise' },
+    { id: 'noise-4', label: 'Air / Dust Pollution' },
+    { id: 'noise-5', label: 'Chemical / Smoke Emission' },
+  ],
+};
 
 const WARDS = [
   { id: 'ward-14', label: 'Ward 14 - Central Municipal Zone (MG Road)', icon: Map },
@@ -40,8 +78,13 @@ const WARDS = [
 
 const ReportIssue = () => {
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(SUB_CATEGORIES[0]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(SUB_CATEGORIES['roads'][0]);
   const [selectedWard, setSelectedWard] = useState(WARDS[0]);
+
+  function handleCategoryChange(cat) {
+    setSelectedCategory(cat);
+    setSelectedSubCategory(SUB_CATEGORIES[cat.id][0]);
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen py-10">
@@ -147,14 +190,14 @@ const ReportIssue = () => {
                 <Dropdown 
                   options={CATEGORIES} 
                   value={selectedCategory} 
-                  onChange={setSelectedCategory} 
+                  onChange={handleCategoryChange} 
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 mb-2">Sub-Category</label>
                     <Dropdown 
-                      options={SUB_CATEGORIES} 
+                      options={SUB_CATEGORIES[selectedCategory.id]} 
                       value={selectedSubCategory} 
                       onChange={setSelectedSubCategory} 
                     />
