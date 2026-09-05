@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Building2, Menu } from 'lucide-react';
+import { Building2, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -69,56 +69,88 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button 
-              className="p-2 text-slate-600 hover:text-blue-600 transition-colors rounded-md"
+              className="p-2 text-slate-600 hover:text-blue-600 transition-colors rounded-md relative w-10 h-10 flex items-center justify-center"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <Menu size={24} />
+              <AnimatePresence mode="wait">
+                {mobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ opacity: 0, rotate: -90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: 90 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute"
+                  >
+                    <X size={24} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ opacity: 0, rotate: 90 }}
+                    animate={{ opacity: 1, rotate: 0 }}
+                    exit={{ opacity: 0, rotate: -90 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute"
+                  >
+                    <Menu size={24} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </button>
           </div>
         </div>
       </div>
       
       {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg">
-          <div className="px-4 pt-2 pb-4 space-y-1">
-            {navLinks.map((link) => {
-              const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
-              return (
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="md:hidden border-t border-gray-100 bg-white absolute w-full shadow-lg overflow-hidden"
+          >
+            <div className="px-4 pt-2 pb-4 space-y-1">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
+                return (
+                  <Link 
+                    key={link.name}
+                    to={link.path} 
+                    className={`block px-3 py-3 text-base font-semibold rounded-lg ${
+                      isActive 
+                        ? 'bg-blue-50 text-blue-600' 
+                        : 'text-slate-600 hover:bg-blue-50 hover:text-blue-600'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+              
+              <div className="border-t border-gray-100 mt-4 pt-4 flex flex-col gap-3">
                 <Link 
-                  key={link.name}
-                  to={link.path} 
-                  className={`block px-3 py-3 text-base font-semibold rounded-lg ${
-                    isActive 
-                      ? 'bg-blue-50 text-blue-600' 
-                      : 'text-slate-600 hover:bg-blue-50 hover:text-blue-600'
-                  }`}
+                  to="/auth" 
+                  className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-blue-600 text-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {link.name}
+                  Log in
                 </Link>
-              );
-            })}
-            
-            <div className="border-t border-gray-100 mt-4 pt-4 flex flex-col gap-3">
-              <Link 
-                to="/auth" 
-                className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-blue-600 text-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Log in
-              </Link>
-              <Link 
-                to="/report" 
-                className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-base font-semibold text-center hover:bg-blue-700 transition-colors shadow-sm"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                File Report
-              </Link>
+                <Link 
+                  to="/report" 
+                  className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg text-base font-semibold text-center hover:bg-blue-700 transition-colors shadow-sm"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  File Report
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
