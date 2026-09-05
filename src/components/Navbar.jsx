@@ -1,5 +1,9 @@
 import { useState } from 'react';
+<<<<<<< Updated upstream
 import { Building2, Menu, X, Search, ArrowRight, LogOut, User, LayoutDashboard } from 'lucide-react';
+=======
+import { Menu, X, Search, ArrowRight, LogOut, User } from 'lucide-react';
+>>>>>>> Stashed changes
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';

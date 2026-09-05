@@ -17,7 +17,7 @@ const Dropdown = ({ options, value, onChange, placeholder = "Select an option...
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button 
+      <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="relative w-full cursor-default rounded-lg bg-white py-3 pl-4 pr-10 text-left border border-gray-300 shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all duration-200 group"
@@ -32,11 +32,11 @@ const Dropdown = ({ options, value, onChange, placeholder = "Select an option...
           <ChevronDown size={18} className={`text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </span>
       </button>
-      
+
       {/* Dropdown Menu */}
       <ul className={`absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm origin-top transition-all duration-200 ease-out ${isOpen ? 'scale-y-100 opacity-100 pointer-events-auto' : 'scale-y-0 opacity-0 pointer-events-none'}`}>
         {options.map((option) => (
-          <li 
+          <li
             key={option.id}
             onClick={() => {
               onChange(option);

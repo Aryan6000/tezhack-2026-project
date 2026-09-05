@@ -1,5 +1,15 @@
+<<<<<<< Updated upstream
 import { useState, useEffect } from 'react';
 import { Search, MapPin, ArrowRight, Users, Loader2, AlertCircle } from 'lucide-react';
+=======
+import { useState } from 'react';
+import {
+  Search,
+  MapPin,
+  ArrowRight,
+  ThumbsUp
+} from 'lucide-react';
+>>>>>>> Stashed changes
 import Dropdown from '../components/Dropdown';
 import { fetchPublicComplaints } from '../services/complaintService';
 
@@ -30,8 +40,75 @@ const STATUS_STYLE = {
   'Closed':       { badge: 'bg-gray-50 text-gray-600 border-gray-200',    dot: 'bg-gray-400' },
 };
 
+<<<<<<< Updated upstream
 const StatusBadge = ({ status }) => {
   const s = STATUS_STYLE[status] || STATUS_STYLE['Submitted'];
+=======
+const MOCK_ISSUES = [
+  {
+    id: '#CIV-2025-8849',
+    title: 'Large drainage cave-in pothole opposite Metro Pillar 142',
+    description: 'Severe structural depression after water main maintenance. Buses and two-wheelers swerving dangerously into opposite lane during rush hours.',
+    location: 'Ward 14, MG Road / Old Airport Junction',
+    status: 'In Progress • 14h Left',
+    statusType: 'warning',
+    backed: 42
+  },
+  {
+    id: '#CIV-2025-8812',
+    title: 'Overflowing commercial garbage dump behind Market Complex',
+    description: 'Unattended municipal waste bin blocking pedestrian corridor. Cleared and disinfected by sanitary quick-response squad.',
+    location: 'Ward 42, Central Market Road',
+    status: 'Resolved',
+    statusType: 'success',
+    backed: 28
+  },
+  {
+    id: '#CIV-2025-8871',
+    title: 'Three consecutive LED streetlights non-functional near School Crossing',
+    description: 'Dark stretch creating security hazard for evening students and pedestrians. Underground cable fault suspected along perimeter wall.',
+    location: 'Ward 88, 5th Cross Pedestrian Lane',
+    status: 'Under Review',
+    statusType: 'info',
+    backed: 38
+  },
+  {
+    id: '#CIV-2025-8890',
+    title: 'Main potable water supply pipe leakage causing low pressure in Block B',
+    description: 'Freshwater pipeline ruptured during cabling work. Households reporting zero water pressure in upper floors since morning.',
+    location: 'Ward 14, Indiranagar 100ft Road',
+    status: 'In Progress • 6h Left',
+    statusType: 'warning',
+    backed: 56
+  },
+  {
+    id: '#CIV-2025-8902',
+    title: 'Overgrown tree branches touching 11kV overhead electrical wire',
+    description: 'Frequent sparks observed during windy conditions. Joint mitigation request approved by Power Board.',
+    location: 'Ward 23, Lakeview Enclave',
+    status: 'Scheduled',
+    statusType: 'info',
+    backed: 19
+  },
+  {
+    id: '#CIV-2025-8915',
+    title: 'Broken sidewalk concrete slabs creating trip hazard for elderly',
+    description: 'High footfall corridor outside central bus terminus. Multiple complaints of minor injuries among senior citizens.',
+    location: 'Ward 14, Bus Terminus Walkway',
+    status: 'Assigned',
+    statusType: 'info',
+    backed: 23
+  }
+];
+
+const StatusBadge = ({ status, type }) => {
+  const styles = {
+    warning: 'bg-orange-50 text-orange-700 border-orange-200',
+    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    info: 'bg-blue-50 text-blue-700 border-blue-200'
+  };
+
+>>>>>>> Stashed changes
   return (
     <span className={`px-2.5 py-1 text-xs font-semibold rounded-md border flex items-center gap-1.5 w-fit ${s.badge}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
@@ -109,6 +186,7 @@ export default function ExploreIssues() {
               className="block w-full h-full min-h-[48px] pl-11 pr-4 bg-gray-50/50 border-0 text-gray-900 rounded-lg focus:ring-0 placeholder:text-gray-500"
             />
           </div>
+<<<<<<< Updated upstream
           <div className="h-px w-full lg:h-8 lg:w-px bg-gray-200 self-center hidden lg:block" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 lg:flex lg:w-auto">
             <div className="w-full lg:w-52">
@@ -116,6 +194,32 @@ export default function ExploreIssues() {
             </div>
             <div className="w-full lg:w-44">
               <Dropdown options={STATUS_OPTS} value={selectedStatus} onChange={setSelectedStatus} />
+=======
+
+          <div className="h-px w-full lg:h-8 lg:w-px bg-gray-200 self-center hidden lg:block"></div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 lg:flex lg:w-auto">
+            <div className="w-full lg:w-48 bg-gray-50/50 rounded-lg">
+              <Dropdown
+                options={CATEGORIES}
+                value={selectedCategory}
+                onChange={setSelectedCategory}
+              />
+            </div>
+            <div className="w-full lg:w-48 bg-gray-50/50 rounded-lg">
+              <Dropdown
+                options={WARDS}
+                value={selectedWard}
+                onChange={setSelectedWard}
+              />
+            </div>
+            <div className="w-full lg:w-40 bg-gray-50/50 rounded-lg">
+              <Dropdown
+                options={STATUSES}
+                value={selectedStatus}
+                onChange={setSelectedStatus}
+              />
+>>>>>>> Stashed changes
             </div>
           </div>
         </div>
@@ -132,11 +236,63 @@ export default function ExploreIssues() {
           </div>
         </div>
 
+<<<<<<< Updated upstream
         {/* States */}
         {error && (
           <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-4 mb-6 text-red-700 text-sm">
             <AlertCircle size={18} className="shrink-0" /> {error}
             <button onClick={load} className="ml-auto font-semibold underline">Retry</button>
+=======
+        {/* Issue Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {MOCK_ISSUES.map(issue => (
+            <div key={issue.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col h-full">
+
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-xs font-semibold text-gray-500 tracking-wide">{issue.id}</span>
+                <StatusBadge status={issue.status} type={issue.statusType} />
+              </div>
+
+              <h3 className="font-bold text-gray-900 text-lg leading-snug mb-3">
+                {issue.title}
+              </h3>
+
+              <p className="text-sm text-gray-600 mb-6 flex-grow">
+                {issue.description}
+              </p>
+
+              <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+                <MapPin size={16} className="text-gray-400 shrink-0" />
+                <span className="truncate">{issue.location}</span>
+              </div>
+
+              <div className="pt-4 border-t border-gray-100 flex items-center justify-between mt-auto">
+                <button className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors">
+                  <ThumbsUp size={16} /> {issue.backed} Backed
+                </button>
+                <button className="flex items-center gap-1 text-sm font-bold text-slate-900 hover:text-blue-600 transition-colors">
+                  {issue.status === 'Resolved' ? 'View Audit' : 'Track Status'} <ArrowRight size={16} />
+                </button>
+              </div>
+
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 pt-6 mb-12 gap-4">
+          <p className="text-sm text-gray-600">
+            Showing <span className="font-semibold text-gray-900">1 - 6</span> of <span className="font-semibold text-gray-900">348</span> civic issues
+          </p>
+          <div className="flex items-center gap-1">
+            <button className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 disabled:opacity-50">Previous</button>
+            <button className="w-8 h-8 flex items-center justify-center rounded-md bg-slate-900 text-white text-sm font-medium">1</button>
+            <button className="w-8 h-8 flex items-center justify-center rounded-md text-gray-700 hover:bg-gray-100 text-sm font-medium">2</button>
+            <button className="w-8 h-8 flex items-center justify-center rounded-md text-gray-700 hover:bg-gray-100 text-sm font-medium">3</button>
+            <span className="px-1 text-gray-400">...</span>
+            <button className="w-8 h-8 flex items-center justify-center rounded-md text-gray-700 hover:bg-gray-100 text-sm font-medium">58</button>
+            <button className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md ml-1">Next</button>
+>>>>>>> Stashed changes
           </div>
         )}
 
@@ -194,7 +350,12 @@ export default function ExploreIssues() {
 
         {/* CTA */}
         <div className="bg-slate-900 rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg border border-slate-800 relative overflow-hidden">
+<<<<<<< Updated upstream
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 -translate-y-1/2 translate-x-1/3" />
+=======
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
+
+>>>>>>> Stashed changes
           <div className="relative z-10 text-center md:text-left">
             <h3 className="text-xl font-bold text-white mb-2">Have a new civic grievance to report?</h3>
             <p className="text-slate-300">Submit in under 2 minutes with automated geolocation and photo upload.</p>

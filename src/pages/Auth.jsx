@@ -13,18 +13,18 @@ const Auth = () => {
   const from = location.state?.from || '/';
 
   // Sign in state
-  const [signInEmail, setSignInEmail]       = useState('');
+  const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
-  const [signInLoading, setSignInLoading]   = useState(false);
-  const [signInError, setSignInError]       = useState('');
+  const [signInLoading, setSignInLoading] = useState(false);
+  const [signInError, setSignInError] = useState('');
 
   // Register state
-  const [regName, setRegName]         = useState('');
-  const [regEmail, setRegEmail]       = useState('');
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
-  const [regLoading, setRegLoading]   = useState(false);
-  const [regError, setRegError]       = useState('');
-  const [regSuccess, setRegSuccess]   = useState(false);
+  const [regLoading, setRegLoading] = useState(false);
+  const [regError, setRegError] = useState('');
+  const [regSuccess, setRegSuccess] = useState(false);
 
   async function handleSignIn(e) {
     e.preventDefault();
@@ -60,33 +60,33 @@ const Auth = () => {
 
   function friendlyError(code) {
     const map = {
-      'auth/invalid-credential':       'Invalid email or password.',
-      'auth/user-not-found':           'No account found with this email.',
-      'auth/wrong-password':           'Incorrect password.',
-      'auth/email-already-in-use':     'An account with this email already exists.',
-      'auth/invalid-email':            'Please enter a valid email address.',
-      'auth/weak-password':            'Password must be at least 6 characters.',
-      'auth/too-many-requests':        'Too many attempts. Please try again later.',
-      'auth/network-request-failed':   'Network error. Check your connection.',
+      'auth/invalid-credential': 'Invalid email or password.',
+      'auth/user-not-found': 'No account found with this email.',
+      'auth/wrong-password': 'Incorrect password.',
+      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/weak-password': 'Password must be at least 6 characters.',
+      'auth/too-many-requests': 'Too many attempts. Please try again later.',
+      'auth/network-request-failed': 'Network error. Check your connection.',
     };
     return map[code] || 'Something went wrong. Please try again.';
   }
 
   return (
     <div className="min-h-[calc(100vh-76px)] bg-[#f4f8ff] relative flex items-center justify-center lg:justify-end lg:pr-[15%] p-4 overflow-hidden">
-      
+
       {/* Background Decor (Image & Floating Card) */}
       <div className="absolute inset-0 z-0 hidden lg:block overflow-hidden">
         {/* Left Side Image */}
-        <div 
+        <div
           className="absolute top-0 left-0 w-[55%] h-full bg-no-repeat bg-cover bg-left"
-          style={{ 
+          style={{
             backgroundImage: 'url(/hero-image.webp)',
             maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)',
             WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%)'
           }}
         />
-        
+
         {/* Floating Decor Badge */}
         <div className="absolute top-[30%] left-[25%] bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-2xl flex items-center gap-4 w-[240px] border border-white/50 animate-[float_4s_ease-in-out_infinite]">
           <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
@@ -101,7 +101,7 @@ const Auth = () => {
 
       {/* Auth Card */}
       <div className="bg-white w-full max-w-[440px] rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-white relative z-10 overflow-hidden">
-        
+
         {/* Tabs */}
         <div className="flex border-b border-gray-100">
           <button
@@ -109,7 +109,7 @@ const Auth = () => {
             className={`flex-1 flex items-center justify-center gap-2 py-4 text-[15px] font-bold transition-all border-b-2 ${activeTab === 'signin'
               ? 'text-blue-600 border-blue-600 bg-white'
               : 'text-gray-400 border-transparent hover:text-gray-600 bg-gray-50/30'
-            }`}
+              }`}
           >
             <LogIn size={18} /> Sign In
           </button>
@@ -118,7 +118,7 @@ const Auth = () => {
             className={`flex-1 flex items-center justify-center gap-2 py-4 text-[15px] font-bold transition-all border-b-2 ${activeTab === 'register'
               ? 'text-blue-600 border-blue-600 bg-white'
               : 'text-gray-400 border-transparent hover:text-gray-600 bg-gray-50/30'
-            }`}
+              }`}
           >
             <UserPlus size={18} /> Register
           </button>
@@ -190,7 +190,7 @@ const Auth = () => {
                     <label className="flex items-center gap-2.5 cursor-pointer group">
                       <div className="relative flex items-center justify-center">
                         <input type="checkbox" className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-[6px] checked:bg-[#2563eb] checked:border-[#2563eb] transition-all cursor-pointer" />
-                        <svg className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        <svg className="absolute w-3 h-3 text-white pointer-events-none opacity-0 peer-checked:opacity-100" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5L4.5 8.5L13 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
                       <span className="text-[14px] font-semibold text-slate-600 group-hover:text-slate-900 transition-colors">Keep me signed in</span>
                     </label>
