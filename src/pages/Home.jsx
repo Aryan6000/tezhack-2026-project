@@ -145,14 +145,14 @@ const Hero = () => {
           </div>
           
           {/* Right Column / Image Area */}
-          <div className="relative h-full min-h-[600px] hidden lg:block z-10">
+          <div className="relative h-[450px] sm:h-[550px] lg:h-full lg:min-h-[600px] mt-8 lg:mt-0 z-10">
             {/* Main Image */}
-            <div className="absolute inset-0 right-[-50px] bg-gray-100 rounded-[40px] rounded-tl-[160px] overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 right-[-20px] lg:right-[-50px] bg-gray-100 rounded-[30px] lg:rounded-[40px] rounded-tl-[100px] lg:rounded-tl-[160px] overflow-hidden shadow-2xl">
               <img src="/hero-image.webp" alt="Clean City" className="w-full h-full object-cover" />
             </div>
             
             {/* Connecting SVG Line */}
-            <svg className="absolute top-20 -left-6 w-full h-full pointer-events-none text-blue-300 z-10" viewBox="0 0 400 400" preserveAspectRatio="none">
+            <svg className="absolute top-10 lg:top-20 -left-6 w-full h-full pointer-events-none text-blue-300 z-10" viewBox="0 0 400 400" preserveAspectRatio="none">
               <path 
                 d="M 50 20 Q 200 20 200 120 T 350 180" 
                 fill="none" 
@@ -165,51 +165,49 @@ const Hero = () => {
             {/* Floating Cards (positioned absolute) */}
             
             {/* Report */}
-            <div className="absolute top-12 -left-8 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl flex items-center gap-4 w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/40">
-                <MapPin size={20} fill="currentColor" strokeWidth={1} />
+            <div className="absolute top-6 lg:top-12 -left-2 lg:-left-8 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/40">
+                <MapPin size={18} className="lg:w-5 lg:h-5" fill="currentColor" strokeWidth={1} />
               </div>
               <div>
-                <div className="font-bold text-slate-900 text-sm">Report</div>
-                <div className="text-[13px] text-slate-500">Geo-tag the issue</div>
+                <div className="font-bold text-slate-900 text-[13px] lg:text-sm">Report</div>
+                <div className="text-[12px] lg:text-[13px] text-slate-500 leading-tight">Geo-tag the issue</div>
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
             
             {/* Track */}
-            <div className="absolute top-48 left-16 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl flex items-center gap-4 w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 rounded-full bg-[#10b981] flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-500/40">
-                <Settings size={20} />
+            <div className="absolute top-32 lg:top-48 left-10 lg:left-16 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#10b981] flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-500/40">
+                <Settings size={18} className="lg:w-5 lg:h-5" />
               </div>
               <div>
-                <div className="font-bold text-slate-900 text-sm">Track</div>
-                <div className="text-[13px] text-slate-500">Real-time updates</div>
+                <div className="font-bold text-slate-900 text-[13px] lg:text-sm">Track</div>
+                <div className="text-[12px] lg:text-[13px] text-slate-500 leading-tight">Real-time updates</div>
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
             
             {/* See Change */}
-            <div className="absolute top-[280px] right-6 bg-white/95 backdrop-blur rounded-2xl p-4 shadow-xl flex items-center gap-4 w-72 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 rounded-full bg-[#8b5cf6] flex items-center justify-center text-white shrink-0 shadow-lg shadow-purple-500/40">
-                <CheckCircle2 size={20} />
+            <div className="absolute top-[220px] lg:top-[280px] right-2 lg:right-6 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[240px] lg:w-72 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#8b5cf6] flex items-center justify-center text-white shrink-0 shadow-lg shadow-purple-500/40">
+                <CheckCircle2 size={18} className="lg:w-5 lg:h-5" />
               </div>
               <div>
-                <div className="font-bold text-slate-900 text-sm">See Change</div>
-                <div className="text-[13px] text-slate-500">A better city, together</div>
+                <div className="font-bold text-slate-900 text-[13px] lg:text-sm">See Change</div>
+                <div className="text-[12px] lg:text-[13px] text-slate-500 leading-tight">A better city, together</div>
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
             
-                        
-
             {/* Bottom Badge */}
-            <div className="absolute bottom-16 left-12 bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-xl flex items-center gap-4 border border-white/50 z-20">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
-                <Leaf size={20} className="text-emerald-600" />
+            <div className="absolute bottom-6 lg:bottom-16 left-6 lg:left-12 bg-white/90 backdrop-blur-md rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 border border-white/50 z-20">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                <Leaf size={18} className="lg:w-5 lg:h-5 text-emerald-600" />
               </div>
               <div>
-                <div className="font-bold text-slate-900 text-sm">Cleaner Today</div>
-                <div className="text-sm text-emerald-700 font-bold">Greener Tomorrow</div>
+                <div className="font-bold text-slate-900 text-[13px] lg:text-sm">Cleaner Today</div>
+                <div className="text-[12px] lg:text-sm text-emerald-700 font-bold">Greener Tomorrow</div>
               </div>
             </div>
           </div>
