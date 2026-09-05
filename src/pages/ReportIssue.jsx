@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import { motion } from 'framer-motion';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -435,14 +436,22 @@ const ReportIssue = () => {
                         <div className="flex bg-gray-100 p-1 rounded-lg">
                           {SEVERITIES.map((s) => (
                             <button key={s} type="button" onClick={() => setSeverity(s)}
-                              className={`flex-1 py-2 text-sm rounded-md transition-all flex items-center justify-center gap-1.5 ${
+                              className={`relative z-10 flex-1 py-2 text-sm rounded-md transition-colors flex items-center justify-center gap-1.5 focus:outline-none focus:ring-0 ${
                                 severity === s
-                                  ? `font-bold bg-white shadow-sm border border-gray-200 ${s === 'Low' ? 'text-green-700' : s === 'Medium' ? 'text-amber-700' : s === 'High' ? 'text-orange-700' : 'text-red-700'}`
-                                  : 'font-medium text-gray-600'
+                                  ? `font-bold ${s === 'Low' ? 'text-green-700' : s === 'Medium' ? 'text-amber-700' : s === 'High' ? 'text-orange-700' : 'text-red-700'}`
+                                  : 'font-medium text-gray-600 hover:text-gray-900'
                               }`}
                             >
-                              {severity === s && <div className={`w-2 h-2 rounded-full ${s === 'Low' ? 'bg-green-500' : s === 'Medium' ? 'bg-amber-500' : s === 'High' ? 'bg-orange-500' : 'bg-red-500'}`} />}
-                              {s}
+                              {severity === s && (
+                                <motion.div
+                                  layoutId="severity-active"
+                                  className="absolute inset-0 bg-white rounded-md shadow-sm border border-gray-200"
+                                  style={{ zIndex: -1 }}
+                                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                />
+                              )}
+                              {severity === s && <div className={`relative z-10 w-2 h-2 rounded-full ${s === 'Low' ? 'bg-green-500' : s === 'Medium' ? 'bg-amber-500' : s === 'High' ? 'bg-orange-500' : 'bg-red-500'}`} />}
+                              <span className="relative z-10">{s}</span>
                             </button>
                           ))}
                         </div>
