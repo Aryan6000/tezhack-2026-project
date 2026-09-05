@@ -23,47 +23,53 @@ export async function uploadPhoto(file, userId) {
 export async function findDuplicates({ category, lat, lng, title, description }) {
   if (!category) return [];
 
-  // Fetch recent open complaints in the same category (last 200, fast)
-  const q = query(
-    collection(db, 'complaints'),
-    where('category', '==', category),
-    where('status', 'in', ['Submitted', 'Acknowledged', 'In Progress']),
-    orderBy('createdAt', 'desc'),
-    limit(200)
-  );
+  try {
+    // Single-field index on category avoids Firestore composite index requirement
+    const q = query(
+      collection(db, 'complaints'),
+      where('category', '==', category),
+      limit(100)
+    );
 
-  const snap = await getDocs(q);
-  if (snap.empty) return [];
+    const snap = await getDocs(q);
+    if (snap.empty) return [];
 
-  const candidates = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const openStatuses = new Set(['Submitted', 'Acknowledged', 'In Progress']);
+    const candidates = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(c => !c.status || openStatuses.has(c.status));
 
-  const results = candidates
-    .map(c => {
-      let score = 30; // category always matches
+    const results = candidates
+      .map(c => {
+        let score = 30; // category always matches
 
-      // Location: up to 40 pts
-      if (lat && lng && c.lat && c.lng) {
-        const dist = getDistKm(lat, lng, c.lat, c.lng);
-        if (dist < 0.1)      score += 40;
-        else if (dist < 0.5) score += 30;
-        else if (dist < 1)   score += 20;
-        else if (dist < 3)   score += 10;
-      }
+        // Location: up to 40 pts
+        if (lat && lng && c.lat && c.lng) {
+          const dist = getDistKm(lat, lng, c.lat, c.lng);
+          if (dist < 0.1)      score += 40;
+          else if (dist < 0.5) score += 30;
+          else if (dist < 1)   score += 20;
+          else if (dist < 3)   score += 10;
+        }
 
-      // Keyword overlap: up to 30 pts
-      const input = new Set(`${title} ${description}`.toLowerCase().split(/\s+/).filter(w => w.length > 3));
-      const existing = new Set(`${c.title} ${c.description}`.toLowerCase().split(/\s+/).filter(w => w.length > 3));
-      let overlap = 0;
-      input.forEach(w => { if (existing.has(w)) overlap++; });
-      score += input.size > 0 ? Math.min(30, Math.round((overlap / input.size) * 30)) : 0;
+        // Keyword overlap: up to 30 pts
+        const input = new Set(`${title} ${description}`.toLowerCase().split(/\s+/).filter(w => w.length > 3));
+        const existing = new Set(`${c.title} ${c.description}`.toLowerCase().split(/\s+/).filter(w => w.length > 3));
+        let overlap = 0;
+        input.forEach(w => { if (existing.has(w)) overlap++; });
+        score += input.size > 0 ? Math.min(30, Math.round((overlap / input.size) * 30)) : 0;
 
-      return { ...c, score };
-    })
-    .filter(c => c.score >= 60)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3);
+        return { ...c, score };
+      })
+      .filter(c => c.score >= 60)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
 
-  return results;
+    return results;
+  } catch (err) {
+    console.warn('findDuplicates error (skipping duplicate check):', err);
+    return [];
+  }
 }
 
 function getDistKm(lat1, lon1, lat2, lon2) {
@@ -140,8 +146,12 @@ export async function submitComplaint(data, photoFile, linkedDuplicateId = null)
 
 // ── Fetch public complaints (no PII) ─────────────────────────────────────────
 export async function fetchPublicComplaints({ category, status, search } = {}) {
-  let q = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'), limit(50));
-  if (category && category !== 'all') q = query(collection(db, 'complaints'), where('category', '==', category), orderBy('createdAt', 'desc'), limit(50));
+  let q;
+  if (category && category !== 'all') {
+    q = query(collection(db, 'complaints'), where('category', '==', category), limit(100));
+  } else {
+    q = query(collection(db, 'complaints'), limit(100));
+  }
 
   const snap = await getDocs(q);
   let results = snap.docs.map(d => {
@@ -166,6 +176,8 @@ export async function fetchPublicComplaints({ category, status, search } = {}) {
     };
   });
 
+  results.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+
   if (status && status !== 'all') results = results.filter(r => r.status === status);
   if (search) {
     const s = search.toLowerCase();
@@ -184,10 +196,12 @@ export async function fetchMyComplaints(userId) {
   const q = query(
     collection(db, 'complaints'),
     where('userId', '==', userId),
-    orderBy('createdAt', 'desc')
+    limit(100)
   );
   const snap = await getDocs(q);
-  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  results.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+  return results;
 }
 
 // ── Fetch a single complaint with status history ──────────────────────────────
@@ -196,10 +210,16 @@ export async function fetchComplaintDetail(complaintId) {
   if (!snap.exists()) throw new Error('Complaint not found');
   const data = { id: snap.id, ...snap.data() };
 
-  const histSnap = await getDocs(
-    query(collection(db, 'complaints', complaintId, 'statusHistory'), orderBy('createdAt', 'asc'))
-  );
-  data.statusHistory = histSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const histSnap = await getDocs(
+      query(collection(db, 'complaints', complaintId, 'statusHistory'))
+    );
+    const histList = histSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    histList.sort((a, b) => (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0));
+    data.statusHistory = histList;
+  } catch {
+    data.statusHistory = [];
+  }
   return data;
 }
 
@@ -214,9 +234,10 @@ export async function findByToken(token) {
 
 // ── Admin: fetch ALL complaints ───────────────────────────────────────────────
 export async function fetchAllComplaints({ status, category, priority, search } = {}) {
-  let q = query(collection(db, 'complaints'), orderBy('createdAt', 'desc'), limit(200));
+  const q = query(collection(db, 'complaints'), limit(300));
   const snap = await getDocs(q);
   let results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  results.sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
 
   if (status && status !== 'all')    results = results.filter(r => r.status === status);
   if (category && category !== 'all') results = results.filter(r => r.category === category);
