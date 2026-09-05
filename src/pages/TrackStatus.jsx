@@ -77,6 +77,9 @@ export default function TrackStatus() {
         <section className="flex flex-col items-center gap-4 w-full max-w-2xl mx-auto text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Track Your Grievance</h1>
           <p className="text-lg text-slate-600 mb-2">Enter your tracking ID or select from your submitted complaints below.</p>
+          <p className="text-lg text-slate-600 mb-2">
+            Enter your tracking ID {user ? 'or select from your submitted complaints below' : 'to check the real-time status of your issue'}.
+          </p>
 
           <div className="flex w-full relative h-14 shadow-sm">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
