@@ -1,4 +1,49 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+const customMarkerIcon = new L.DivIcon({
+  html: `<div style="color: #ef4444; filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="#ef4444" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 15.007 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></div>`,
+  className: 'custom-leaflet-marker',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+});
+
+function MapUpdater({ lat, lng }) {
+  const map = useMap();
+  useEffect(() => {
+    if (lat && lng) {
+      map.flyTo([lat, lng], 15);
+    }
+  }, [lat, lng, map]);
+  return null;
+}
+
+function LocationMarker({ lat, lng, setLat, setLng }) {
+  useMapEvents({
+    click(e) {
+      setLat(e.latlng.lat);
+      setLng(e.latlng.lng);
+    }
+  });
+
+  return (lat && lng) ? (
+    <Marker
+      position={[lat, lng]}
+      draggable={true}
+      eventHandlers={{
+        dragend: (e) => {
+          const marker = e.target;
+          const position = marker.getLatLng();
+          setLat(position.lat);
+          setLng(position.lng);
+        },
+      }}
+      icon={customMarkerIcon}
+    />
+  ) : null;
+}
 import {
   ShieldCheck, MapPin, AlertCircle, CheckCircle2, Info,
   Image as ImageIcon, Trash2, Crosshair, Droplets,
@@ -305,21 +350,11 @@ const ReportIssue = () => {
 
         {/* Header */}
         <div className="mb-10">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold tracking-wide uppercase mb-4">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                Fast-Track Citizen Redressal
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Report an Issue</h1>
-              <p className="text-gray-600 max-w-2xl text-lg">
-                Submit local problems directly to municipal engineers in under 60 seconds. Every report is geo-tagged, time-stamped, and legally backed by statutory SLA timelines.
-              </p>
-            </div>
-            <div className="shrink-0 flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2.5 rounded-lg border border-green-200">
-              <ShieldCheck size={20} className="text-green-600" />
-              <span className="font-semibold text-sm">Statutory SLA Guarantee<br /><span className="font-normal text-xs">Resolution in 48-72h or automated escalation</span></span>
-            </div>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 tracking-tight">Report an Issue</h1>
+            <p className="text-gray-600 max-w-2xl text-lg">
+              Submit local problems directly to municipal engineers in under 60 seconds. Every report is geo-tagged, time-stamped, and legally backed by statutory SLA timelines.
+            </p>
           </div>
         </div>
 
@@ -475,19 +510,24 @@ const ReportIssue = () => {
                           className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                       </div>
                     </div>
-                    <div className="h-64 bg-gray-200 rounded-lg border border-gray-300 relative overflow-hidden flex items-center justify-center">
-                      <div className="absolute inset-0 bg-[url('https://maps.wikimedia.org/osm-intl/13/5799/3820.png')] bg-cover bg-center opacity-70" />
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10 flex flex-col items-center">
-                        <div className="bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded shadow-lg mb-1 flex items-center gap-1">
-                          <MapPin size={12} /> {lat ? `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E` : '12.9716° N, 77.5946° E'}
-                        </div>
-                        <MapPin size={32} className="text-red-500 drop-shadow-md" fill="#ef4444" />
-                      </div>
-                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-700">
+                    <div className="h-64 bg-gray-200 rounded-lg border border-gray-300 relative overflow-hidden z-0">
+                      <MapContainer
+                        center={lat && lng ? [lat, lng] : [12.9716, 77.5946]}
+                        zoom={13}
+                        style={{ height: '100%', width: '100%' }}
+                      >
+                        <TileLayer
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <MapUpdater lat={lat} lng={lng} />
+                        <LocationMarker lat={lat} lng={lng} setLat={setLat} setLng={setLng} />
+                      </MapContainer>
+                      <div className="absolute bottom-3 left-3 z-[1000] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-700 pointer-events-none">
                         <div className={`w-2 h-2 rounded-full ${lat ? 'bg-green-500' : 'bg-gray-400'}`} />
-                        {lat ? 'GPS Captured' : 'GPS Accuracy: 4.6m'}
+                        {lat ? 'GPS Captured' : 'Click map to set location'}
                       </div>
-                      <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 text-xs font-medium text-gray-600">
+                      <div className="absolute bottom-3 right-3 z-[1000] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 text-xs font-medium text-gray-600 pointer-events-none">
                         Drag pin to adjust
                       </div>
                     </div>
