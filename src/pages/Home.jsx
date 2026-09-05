@@ -1,3 +1,4 @@
+import { useEffect, useState, useMemo } from 'react';
 import {
   Search,
   MapPin,
@@ -15,15 +16,16 @@ import {
   Camera,
   Cpu,
   UserCheck,
-  FileText,
   HelpCircle,
   ArrowRight,
   Settings,
   Leaf,
-  Loader2
+  Loader2,
+  FileText
 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { collection, where, query as fsQuery, getCountFromServer } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import { fetchPublicComplaints } from '../services/complaintService';
 
 const Hero = () => {
@@ -33,7 +35,7 @@ const Hero = () => {
   const handleTrackSubmit = (e) => {
     e.preventDefault();
     if (trackToken.trim()) {
-      navigate(`/track/${trackToken.trim()}`);
+      navigate(`/track`);
     }
   };
 
@@ -147,9 +149,7 @@ const Hero = () => {
               />
             </svg>
 
-            {/* Floating Cards (positioned absolute) */}
-
-            {/* Report */}
+            {/* Floating Cards */}
             <div className="absolute top-6 lg:top-12 -left-2 lg:-left-8 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/40">
                 <MapPin size={18} className="lg:w-5 lg:h-5" fill="currentColor" strokeWidth={1} />
@@ -161,7 +161,6 @@ const Hero = () => {
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
 
-            {/* Track */}
             <div className="absolute top-32 lg:top-48 left-10 lg:left-16 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#10b981] flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-500/40">
                 <Settings size={18} className="lg:w-5 lg:h-5" />
@@ -173,7 +172,6 @@ const Hero = () => {
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
 
-            {/* See Change */}
             <div className="absolute top-[220px] lg:top-[280px] right-2 lg:right-6 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[240px] lg:w-72 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#8b5cf6] flex items-center justify-center text-white shrink-0 shadow-lg shadow-purple-500/40">
                 <CheckCircle2 size={18} className="lg:w-5 lg:h-5" />
@@ -185,7 +183,6 @@ const Hero = () => {
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
 
-            {/* Bottom Badge */}
             <div className="absolute bottom-6 lg:bottom-16 left-6 lg:left-12 bg-white/90 backdrop-blur-md rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 border border-white/50 z-20">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
                 <Leaf size={18} className="lg:w-5 lg:h-5 text-emerald-600" />
@@ -209,7 +206,7 @@ const CategoryCard = ({ icon: Icon, title, activeCount, desc, sla }) => (
         <Icon size={24} />
       </div>
       <span className="bg-gray-100 text-gray-600 text-xs font-medium px-2 py-1 rounded-full">
-        {activeCount} Active
+        {activeCount ?? '—'} Active
       </span>
     </div>
     <h3 className="text-lg font-bold text-gray-900 mb-2">{title}</h3>
@@ -223,7 +220,39 @@ const CategoryCard = ({ icon: Icon, title, activeCount, desc, sla }) => (
   </div>
 );
 
+const CATEGORY_META = [
+  { key: 'Roads & Potholes',       icon: AlertCircle, desc: 'Potholes, broken footpaths, road cracks, damaged road signs, and illegal obstacles.',         sla: '48 Hours' },
+  { key: 'Waste Management',        icon: Trash2,      desc: 'Overflowing public dustbins, uncollected household waste, and open dump hazards.',              sla: '24 Hours' },
+  { key: 'Water Supply & Drainage', icon: Droplets,    desc: 'Burst pipelines, water contamination, sewer leaks, and clogged rainwater drains.',             sla: '12-24 Hours' },
+  { key: 'Street Lighting & Power', icon: Lightbulb,   desc: 'Burnt out street lamps, hazardous electrical wires, and faulty timer switches.',               sla: '24 Hours' },
+  { key: 'Public Parks & Trees',    icon: TreePine,    desc: 'Dangerous broken branches, vandalized playground amenities, and park irrigation leaks.',       sla: '48 Hours' },
+  { key: 'Pollution & Noise',       icon: VolumeX,     desc: 'Loudspeakers past mandated curfew, illegal factory emission, and construction dust.',          sla: '12 Hours' },
+];
+
 const Categories = () => {
+  const [counts, setCounts] = useState({});
+
+  useEffect(() => {
+    async function loadCounts() {
+      const results = {};
+      await Promise.all(
+        CATEGORY_META.map(async ({ key }) => {
+          try {
+            const q = fsQuery(
+              collection(db, 'complaints'),
+              where('category', '==', key),
+              where('status', 'in', ['Submitted', 'Acknowledged', 'In Progress'])
+            );
+            const snap = await getCountFromServer(q);
+            results[key] = snap.data().count;
+          } catch { results[key] = null; }
+        })
+      );
+      setCounts(results);
+    }
+    loadCounts();
+  }, []);
+
   return (
     <section className="bg-gray-50 py-20 px-4">
       <div className="max-w-7xl mx-auto">
@@ -233,54 +262,18 @@ const Categories = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Select Grievance Category</h2>
             <p className="text-gray-600">Submit directly to specialized field units with guaranteed SLA routing.</p>
           </div>
-          <Link to="#" className="text-blue-600 font-medium hover:underline flex items-center gap-1 whitespace-nowrap">
-            View all 24 departments <ChevronRight size={16} />
-          </Link>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <CategoryCard
-            icon={AlertCircle}
-            title="Roads & Potholes"
-            activeCount="312"
-            desc="Potholes, broken footpaths, road cracks, damaged road signs, and illegal obstacles."
-            sla="48 Hours"
-          />
-          <CategoryCard
-            icon={Trash2}
-            title="Waste Management"
-            activeCount="184"
-            desc="Overflowing public dustbins, uncollected household waste, and open dump hazards."
-            sla="24 Hours"
-          />
-          <CategoryCard
-            icon={Droplets}
-            title="Water Supply & Drainage"
-            activeCount="98"
-            desc="Burst pipelines, water contamination, sewer leaks, and clogged rainwater drains."
-            sla="12-24 Hours"
-          />
-          <CategoryCard
-            icon={Lightbulb}
-            title="Street Lighting & Power"
-            activeCount="142"
-            desc="Burnt out street lamps, hazardous electrical wires, and faulty timer switches."
-            sla="24 Hours"
-          />
-          <CategoryCard
-            icon={TreePine}
-            title="Public Parks & Trees"
-            activeCount="67"
-            desc="Dangerous broken branches, vandalized playground amenities, and park irrigation leaks."
-            sla="48 Hours"
-          />
-          <CategoryCard
-            icon={VolumeX}
-            title="Pollution & Noise"
-            activeCount="54"
-            desc="Loudspeakers past mandated curfew, illegal factory emission, and construction dust."
-            sla="12 Hours"
-          />
+          {CATEGORY_META.map(({ key, icon, desc, sla }) => (
+            <CategoryCard
+              key={key}
+              icon={icon}
+              title={key}
+              activeCount={counts[key]}
+              desc={desc}
+              sla={sla}
+            />
+          ))}
         </div>
       </div>
     </section>
@@ -491,4 +484,3 @@ const Home = () => {
 };
 
 export default Home;
-
