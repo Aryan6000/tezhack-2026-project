@@ -51,6 +51,7 @@ import {
   Lightbulb, TreePine, VolumeX, Map, Loader2, X, Users
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown';
 import { submitComplaint, findDuplicates } from '../services/complaintService';
 
@@ -122,21 +123,50 @@ const SEVERITIES = ['Low', 'Medium', 'High', 'Critical'];
 // ─── Component ───────────────────────────────────────────────────────────────
 const ReportIssue = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  const getSaved = (key, defaultVal) => {
+    try {
+      const item = sessionStorage.getItem(`report_${key}`);
+      return item ? JSON.parse(item) : defaultVal;
+    } catch {
+      return defaultVal;
+    }
+  };
+
+  // Helpers for complex objects
+  const getCategory = () => {
+    const id = getSaved('categoryId', CATEGORIES[0].id);
+    return CATEGORIES.find(c => c.id === id) || CATEGORIES[0];
+  };
+  const getSubCategory = (catId) => {
+    const subs = SUB_CATEGORIES[catId] || [];
+    const defaultSub = subs[0] || null;
+    if (!defaultSub) return null;
+    const id = getSaved('subCategoryId', defaultSub.id);
+    return subs.find(s => s.id === id) || defaultSub;
+  };
+  const getWard = () => {
+    const id = getSaved('wardId', WARDS[0].id);
+    return WARDS.find(w => w.id === id) || WARDS[0];
+  };
+
   // form state
-  const [selectedCategory,    setSelectedCategory]    = useState(CATEGORIES[0]);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(SUB_CATEGORIES['roads'][0]);
-  const [selectedWard,        setSelectedWard]        = useState(WARDS[0]);
-  const [severity,            setSeverity]            = useState('Medium');
-  const [title,               setTitle]               = useState('');
-  const [description,         setDescription]         = useState('');
-  const [address,             setAddress]             = useState('');
-  const [lat,                 setLat]                 = useState(null);
-  const [lng,                 setLng]                 = useState(null);
+  const [selectedCategory,    setSelectedCategory]    = useState(getCategory);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(() => getSubCategory(getCategory().id));
+  const [selectedWard,        setSelectedWard]        = useState(getWard);
+  const [severity,            setSeverity]            = useState(() => getSaved('severity', 'Medium'));
+  const [title,               setTitle]               = useState(() => getSaved('title', ''));
+  const [description,         setDescription]         = useState(() => getSaved('desc', ''));
+  const [address,             setAddress]             = useState(() => getSaved('address', ''));
+  const [lat,                 setLat]                 = useState(() => getSaved('lat', null));
+  const [lng,                 setLng]                 = useState(() => getSaved('lng', null));
+  const [anonymous,           setAnonymous]           = useState(() => getSaved('anon', true));
+  
+  // photos cannot be saved to sessionStorage
   const [photoFile,           setPhotoFile]           = useState(null);
   const [photoPreview,        setPhotoPreview]        = useState(null);
-  const [anonymous,           setAnonymous]           = useState(true);
 
   // ui state
   const [gpsLoading,   setGpsLoading]   = useState(false);
@@ -147,11 +177,26 @@ const ReportIssue = () => {
   // duplicate detection
   const [duplicates,    setDuplicates]    = useState([]);
   const [showDupeModal, setShowDupeModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingSubmit, setPendingSubmit] = useState(false);
 
   // pagination state
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(() => getSaved('step', 1));
   const totalSteps = 3;
+
+  useEffect(() => {
+    sessionStorage.setItem('report_categoryId', JSON.stringify(selectedCategory?.id));
+    sessionStorage.setItem('report_subCategoryId', JSON.stringify(selectedSubCategory?.id));
+    sessionStorage.setItem('report_wardId', JSON.stringify(selectedWard?.id));
+    sessionStorage.setItem('report_severity', JSON.stringify(severity));
+    sessionStorage.setItem('report_title', JSON.stringify(title));
+    sessionStorage.setItem('report_desc', JSON.stringify(description));
+    sessionStorage.setItem('report_address', JSON.stringify(address));
+    sessionStorage.setItem('report_lat', JSON.stringify(lat));
+    sessionStorage.setItem('report_lng', JSON.stringify(lng));
+    sessionStorage.setItem('report_anon', JSON.stringify(anonymous));
+    sessionStorage.setItem('report_step', JSON.stringify(currentStep));
+  }, [selectedCategory, selectedSubCategory, selectedWard, severity, title, description, address, lat, lng, anonymous, currentStep]);
 
   function handleCategoryChange(cat) {
     setSelectedCategory(cat);
@@ -209,10 +254,9 @@ const ReportIssue = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    if (!user)               { setError('You must be signed in to submit a report.'); return; }
+    if (!user)               { setShowAuthModal(true); return; }
     if (!title.trim())       { setError('Please enter a title.'); return; }
     if (!description.trim()) { setError('Please enter a description.'); return; }
-    if (!photoFile)          { setError('Please upload a photo before submitting.'); return; }
 
     setSubmitting(true);
     try {
@@ -257,6 +301,12 @@ const ReportIssue = () => {
         lat, lng,
         anonymous,
       }, photoFile, linkedId);
+      
+      // Clear session storage on success
+      Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('report_')) sessionStorage.removeItem(key);
+      });
+      
       setSuccessToken(token);
     } catch (err) {
       setError(err.message || 'Submission failed. Please try again.');
@@ -293,6 +343,37 @@ const ReportIssue = () => {
   // ── Form ────────────────────────────────────────────────────────────────────
   return (
     <div className="bg-gray-50 min-h-screen py-10">
+
+      {/* Auth Requirement Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden text-center p-8">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users size={28} className="text-blue-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h3>
+            <p className="text-sm text-gray-500 mb-8">
+              You must be signed in to submit a grievance. This helps us keep you updated on the status of your issue.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                type="button"
+                onClick={() => navigate('/auth', { state: { from: '/report' } })}
+                className="w-full px-4 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Sign In / Register
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAuthModal(false)}
+                className="w-full px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-semibold text-sm hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Duplicate Warning Modal */}
       {showDupeModal && (
@@ -556,11 +637,8 @@ const ReportIssue = () => {
                       <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         Photographic Proof
                       </h2>
-                      <span className="bg-red-100 text-red-600 text-xs font-semibold px-2.5 py-1 rounded-md">Required</span>
+                      <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-md">Optional</span>
                     </div>
-                    <span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1.5">
-                      <CheckCircle2 size={14} /> AI Duplicate Scan Active
-                    </span>
                   </div>
                   <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
                     onChange={e => handlePhoto(e.target.files[0])} />
