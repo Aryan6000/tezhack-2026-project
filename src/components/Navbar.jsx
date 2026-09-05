@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Menu, X, Search, ArrowRight } from 'lucide-react';
+import { Menu, X, Search, ArrowRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -22,7 +22,7 @@ const Navbar = () => {
           
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <Building2 size={28} className="text-blue-600" strokeWidth={2.5} />
+            <img src="/logo.png" alt="PIRT Logo" className="h-9 w-auto object-contain" />
             <div className="flex flex-col">
               <span className="font-bold text-xl tracking-wide text-slate-900 leading-none mb-0.5">PIRT</span>
               <span className="text-[10px] text-gray-500 font-medium leading-none">Cleaner Cities. Stronger Citizens.</span>
