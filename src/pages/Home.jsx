@@ -21,9 +21,20 @@ import {
   Settings,
   Leaf
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const [trackToken, setTrackToken] = useState('');
+  const navigate = useNavigate();
+
+  const handleTrackSubmit = (e) => {
+    e.preventDefault();
+    if (trackToken.trim()) {
+      navigate(`/track/${trackToken.trim()}`);
+    }
+  };
+
   return (
     <section className="relative overflow-hidden bg-[#fafcff]">
       {/* Background Decor */}
@@ -47,28 +58,36 @@ const Hero = () => {
               Report civic issues, track real-time resolution, and hold departments accountable. Geo-tag problems in 60 seconds and help build a better city.
             </p>
 
-            {/* Report Box */}
+            {/* Tracking & Report Box */}
             <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 p-2 mb-12 relative z-20">
               <div className="flex items-center justify-between px-4 pt-3 pb-4 border-b border-gray-50">
                 <div className="flex gap-6">
                   <button className="text-blue-600 font-bold text-sm border-b-2 border-blue-600 pb-1 flex items-center gap-2">
-                    Report an Issue
+                    Track an Issue
                   </button>
                 </div>
               </div>
 
               <div className="p-4 pt-5">
-                <div className="flex flex-col sm:flex-row gap-3">
+                <form onSubmit={handleTrackSubmit} className="flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-1">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
                       type="text"
-                      placeholder="Enter location or landmark..."
+                      placeholder="Enter Grievance Token ID..."
+                      value={trackToken}
+                      onChange={(e) => setTrackToken(e.target.value)}
                       className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors text-sm"
                     />
                   </div>
-                  <Link to="/report" className="bg-[#2563eb] hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm shadow-blue-500/30">
-                    Start Report <ArrowRight size={18} />
+                  <button type="submit" className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm shadow-slate-900/20">
+                    Track Status <ArrowRight size={18} />
+                  </button>
+                </form>
+
+                <div className="mt-5 pt-5 border-t border-gray-100">
+                  <Link to="/report" className="w-full bg-[#2563eb] hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm shadow-blue-500/30">
+                    Report a New Issue
                   </Link>
                 </div>
               </div>
