@@ -24,7 +24,6 @@ import AdminAnalytics     from './pages/admin/Analytics';
 import AdminPriority      from './pages/admin/Priority';
 import AdminDepartments   from './pages/admin/Departments';
 
-<<<<<<< Updated upstream
 // Auth contexts
 import { AuthProvider }                    from './context/AuthContext';
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext';
@@ -36,31 +35,6 @@ function AdminProtectedRoute({ children }) {
     <div className="min-h-screen flex items-center justify-center bg-slate-900">
       <Loader2 size={32} className="animate-spin text-blue-500" />
     </div>
-=======
-const AnimatedRoutes = () => {
-  const location = useLocation();
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex-grow flex flex-col"
-      >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/report" element={<ReportIssue />} />
-          <Route path="/explore" element={<ExploreIssues />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/track" element={<TrackStatus />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
->>>>>>> Stashed changes
   );
   if (!adminUser) return <Navigate to="/admin" replace />;
   return children;
