@@ -212,6 +212,7 @@ const ReportIssue = () => {
     if (!user)               { setError('You must be signed in to submit a report.'); return; }
     if (!title.trim())       { setError('Please enter a title.'); return; }
     if (!description.trim()) { setError('Please enter a description.'); return; }
+    if (!photoFile)          { setError('Please upload a photo before submitting.'); return; }
 
     setSubmitting(true);
     try {
@@ -551,9 +552,12 @@ const ReportIssue = () => {
                 <div className="p-6 md:p-8 relative">
                   <div className="absolute left-0 top-8 bottom-0 w-1 bg-blue-600 rounded-r-md hidden md:block" />
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                      Photographic Proof
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        Photographic Proof
+                      </h2>
+                      <span className="bg-red-100 text-red-600 text-xs font-semibold px-2.5 py-1 rounded-md">Required</span>
+                    </div>
                     <span className="text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1.5">
                       <CheckCircle2 size={14} /> AI Duplicate Scan Active
                     </span>

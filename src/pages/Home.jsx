@@ -55,9 +55,7 @@ const Hero = () => {
                     Track an Issue
                   </button>
                 </div>
-                <button className="text-slate-400 text-sm flex items-center gap-1 hover:text-slate-600 transition-colors hidden sm:flex">
-                  Need help? <HelpCircle size={14} />
-                </button>
+  
               </div>
 
               <div className="p-4 pt-5">
