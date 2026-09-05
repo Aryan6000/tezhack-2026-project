@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../lib/firebase';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { ShieldCheck, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -25,8 +26,26 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/admin/dashboard');
+      const { user } = await signInWithEmailAndPassword(auth, email, password);
+
+      // Check role in Firestore — must be "admin"
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if (!snap.exists() || snap.data()?.role !== 'admin') {
+          await auth.signOut();
+          setError('Access denied. Admin accounts only.');
+          setLoading(false);
+          return;
+        }
+      } catch (firestoreErr) {
+        // Firestore read failed — sign out for security
+        await auth.signOut();
+        setError('Could not verify admin role. Please ensure your account is set up correctly.');
+        setLoading(false);
+        return;
+      }
+
+      window.location.href = '/admin/dashboard';
     } catch (err) {
       const map = {
         'auth/invalid-credential': 'Invalid email or password.',

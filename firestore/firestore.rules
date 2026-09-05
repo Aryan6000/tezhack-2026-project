@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ── users ─────────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      // User reads/writes their own profile
+      allow read:   if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid;
+      // Can update own profile BUT cannot change role field
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && !('role' in request.resource.data);
+      // Admin can read any user profile
+      allow read:   if isAdmin();
+    }
+
+    // ── complaints ────────────────────────────────────────────────────────────
+    match /complaints/{id} {
+      allow read:   if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        (request.auth.uid == resource.data.userId || isAdmin());
+      allow delete: if isAdmin();
+
+      match /statusHistory/{hid} {
+        allow read:   if true;
+        allow create: if request.auth != null;
+      }
+    }
+  }
+}
