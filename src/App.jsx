@@ -13,6 +13,7 @@ import ExploreIssues from './pages/ExploreIssues';
 import Auth          from './pages/Auth';
 import TrackStatus   from './pages/TrackStatus';
 import About         from './pages/About';
+import Profile       from './pages/Profile';
 
 // Admin pages
 import AdminLogin         from './pages/admin/Login';
@@ -60,6 +61,7 @@ function CitizenApp() {
               <Route path="/explore" element={<ExploreIssues />} />
               <Route path="/auth"    element={<Auth />} />
               <Route path="/track"   element={<TrackStatus />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </motion.div>
         </AnimatePresence>

@@ -52,7 +52,7 @@ const Hero = () => {
               <div className="flex items-center justify-between px-4 pt-3 pb-4 border-b border-gray-50">
                 <div className="flex gap-6">
                   <button className="text-blue-600 font-bold text-sm border-b-2 border-blue-600 pb-1 flex items-center gap-2">
-                    <Search size={16} /> Track an Issue
+                    Track an Issue
                   </button>
                 </div>
                 <button className="text-slate-400 text-sm flex items-center gap-1 hover:text-slate-600 transition-colors hidden sm:flex">

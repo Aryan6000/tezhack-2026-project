@@ -79,6 +79,10 @@ const Navbar = () => {
                         <LayoutDashboard size={15} /> Admin Dashboard
                       </Link>
                     )}
+                    <Link to="/profile" onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 font-semibold">
+                      <User size={15} /> My Profile
+                    </Link>
                     <button onClick={() => { setUserMenuOpen(false); handleSignOut(); }}
                       className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
                       <LogOut size={15} /> Sign Out
@@ -139,11 +143,18 @@ const Navbar = () => {
               })}
               <div className="border-t border-gray-100 mt-4 pt-4 flex flex-col gap-3">
                 {user ? (
-                  <button onClick={() => { setMobileMenuOpen(false); handleSignOut(); }}
-                    className="flex items-center justify-center gap-2 px-3 py-2 text-base font-semibold text-red-600"
-                  >
-                    <LogOut size={16} /> Sign Out
-                  </button>
+                  <>
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 text-base font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 rounded-md"
+                    >
+                      <User size={16} /> My Profile
+                    </Link>
+                    <button onClick={() => { setMobileMenuOpen(false); handleSignOut(); }}
+                      className="flex items-center justify-center gap-2 px-3 py-2 text-base font-semibold text-red-600 hover:bg-red-50 rounded-md"
+                    >
+                      <LogOut size={16} /> Sign Out
+                    </button>
+                  </>
                 ) : (
                   <Link to="/auth" className="block px-3 py-2 text-base font-semibold text-slate-600 hover:text-blue-600 text-center" onClick={() => setMobileMenuOpen(false)}>
                     Log in
