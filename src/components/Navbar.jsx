@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Menu, X } from 'lucide-react';
+import { Building2, Menu, X, Search, ArrowRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,17 +18,20 @@ const Navbar = () => {
   return (
     <nav className="bg-white sticky top-0 z-50 border-b border-gray-100/50 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-[72px]">
+        <div className="flex items-center justify-between h-[76px]">
           
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <Building2 size={24} className="text-blue-600" strokeWidth={2.5} />
-            <span className="font-bold text-lg tracking-wide text-blue-600">PIRT</span>
+            <Building2 size={28} className="text-blue-600" strokeWidth={2.5} />
+            <div className="flex flex-col">
+              <span className="font-bold text-xl tracking-wide text-slate-900 leading-none mb-0.5">PIRT</span>
+              <span className="text-[10px] text-gray-500 font-medium leading-none">Cleaner Cities. Stronger Citizens.</span>
+            </div>
           </Link>
           
           {/* Nav Links - Center (Desktop) */}
           <div className="hidden md:flex flex-1 justify-center items-center">
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-2">
               {navLinks.map((link) => {
                 const isActive = location.pathname === link.path || (link.path !== '/' && location.pathname.startsWith(link.path));
                 
@@ -36,10 +39,10 @@ const Navbar = () => {
                   <Link 
                     key={link.name}
                     to={link.path} 
-                    className={`relative px-4 py-6 text-sm font-semibold transition-colors ${
+                    className={`relative px-4 py-6 text-[15px] font-semibold transition-colors ${
                       isActive 
                         ? 'text-blue-600' 
-                        : 'text-slate-500 hover:text-blue-600'
+                        : 'text-slate-600 hover:text-blue-600'
                     }`}
                   >
                     {link.name}
@@ -57,12 +60,16 @@ const Navbar = () => {
           </div>
 
           {/* Actions - Right (Desktop) */}
-          <div className="hidden md:flex items-center space-x-6 shrink-0">
+          <div className="hidden md:flex items-center space-x-5 shrink-0">
+            <button className="text-slate-400 hover:text-blue-600 transition-colors">
+              <Search size={20} />
+            </button>
+            <div className="h-5 w-px bg-gray-200"></div>
             <Link to="/auth" className="text-slate-600 text-sm font-semibold hover:text-blue-600 transition-colors">
               Log in
             </Link>
-            <Link to="/report" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm">
-              File Report
+            <Link to="/report" className="bg-[#2563eb] hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-medium transition-all shadow-sm flex items-center gap-1.5">
+              File Report <ArrowRight size={16} />
             </Link>
           </div>
 
