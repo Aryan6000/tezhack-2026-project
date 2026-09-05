@@ -10,52 +10,52 @@ import { submitComplaint, findDuplicates } from '../services/complaintService';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: 'roads', label: 'Roads & Potholes', icon: AlertCircle },
-  { id: 'waste', label: 'Waste Management', icon: Trash2 },
-  { id: 'water', label: 'Water Supply & Drainage', icon: Droplets },
-  { id: 'power', label: 'Street Lighting & Power', icon: Lightbulb },
-  { id: 'parks', label: 'Public Parks & Trees', icon: TreePine },
-  { id: 'noise', label: 'Pollution & Noise', icon: VolumeX },
-  { id: 'others', label: 'Others', icon: Info },
+  { id: 'roads',  label: 'Roads & Potholes',        icon: AlertCircle },
+  { id: 'waste',  label: 'Waste Management',          icon: Trash2 },
+  { id: 'water',  label: 'Water Supply & Drainage',   icon: Droplets },
+  { id: 'power',  label: 'Street Lighting & Power',   icon: Lightbulb },
+  { id: 'parks',  label: 'Public Parks & Trees',      icon: TreePine },
+  { id: 'noise',  label: 'Pollution & Noise',         icon: VolumeX },
+  { id: 'others', label: 'Others',                    icon: Info },
 ];
 
 const SUB_CATEGORIES = {
-  roads: [
+  roads:  [
     { id: 'roads-1', label: 'Deep Pothole / Road Cave-in' },
     { id: 'roads-2', label: 'Broken Footpath / Pavement' },
     { id: 'roads-3', label: 'Damaged Road Divider' },
     { id: 'roads-4', label: 'Waterlogging on Road' },
     { id: 'roads-5', label: 'Illegal Road Obstruction' },
   ],
-  waste: [
+  waste:  [
     { id: 'waste-1', label: 'Garbage Dump Not Cleared' },
     { id: 'waste-2', label: 'Dead Animal on Road' },
     { id: 'waste-3', label: 'Overflowing Dustbin' },
     { id: 'waste-4', label: 'Open Burning of Waste' },
     { id: 'waste-5', label: 'Sewage Overflow on Street' },
   ],
-  water: [
+  water:  [
     { id: 'water-1', label: 'Burst Water Pipeline' },
     { id: 'water-2', label: 'No Water Supply' },
     { id: 'water-3', label: 'Contaminated Water' },
     { id: 'water-4', label: 'Clogged / Blocked Drain' },
     { id: 'water-5', label: 'Manhole Open / Uncovered' },
   ],
-  power: [
+  power:  [
     { id: 'power-1', label: 'Street Light Not Working' },
     { id: 'power-2', label: 'Dangling / Broken Wire' },
     { id: 'power-3', label: 'Transformer Fault' },
     { id: 'power-4', label: 'Frequent Power Cuts' },
     { id: 'power-5', label: 'Electric Pole Damaged' },
   ],
-  parks: [
+  parks:  [
     { id: 'parks-1', label: 'Dangerous Broken Tree Branch' },
     { id: 'parks-2', label: 'Vandalized Park Equipment' },
     { id: 'parks-3', label: 'Uprooted / Fallen Tree' },
     { id: 'parks-4', label: 'Broken Park Benches / Lights' },
     { id: 'parks-5', label: 'Encroachment on Public Land' },
   ],
-  noise: [
+  noise:  [
     { id: 'noise-1', label: 'Illegal Loudspeaker / DJ' },
     { id: 'noise-2', label: 'Construction Noise at Night' },
     { id: 'noise-3', label: 'Factory / Industrial Noise' },
@@ -67,16 +67,11 @@ const SUB_CATEGORIES = {
 
 const WARDS = [
   { id: 'ward-14', label: 'Ward 14 - Central Municipal Zone (MG Road)', icon: Map },
-  { id: 'ward-15', label: 'Ward 15 - East Zone (Indiranagar)', icon: Map },
-  { id: 'ward-16', label: 'Ward 16 - South Zone (Koramangala)', icon: Map },
+  { id: 'ward-15', label: 'Ward 15 - East Zone (Indiranagar)',           icon: Map },
+  { id: 'ward-16', label: 'Ward 16 - South Zone (Koramangala)',          icon: Map },
 ];
 
-const SEVERITIES = ['Minor', 'Moderate', 'Critical'];
-
-// generate a short token ID
-function genToken() {
-  return 'CIV-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
-}
+const SEVERITIES = ['Low', 'Medium', 'High', 'Critical'];
 
 // ─── Component ───────────────────────────────────────────────────────────────
 const ReportIssue = () => {
@@ -84,34 +79,33 @@ const ReportIssue = () => {
   const fileInputRef = useRef(null);
 
   // form state
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
+  const [selectedCategory,    setSelectedCategory]    = useState(CATEGORIES[0]);
   const [selectedSubCategory, setSelectedSubCategory] = useState(SUB_CATEGORIES['roads'][0]);
-  const [selectedWard, setSelectedWard] = useState(WARDS[0]);
-  const [severity, setSeverity] = useState('Moderate');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('');
-  const [lat, setLat] = useState(null);
-  const [lng, setLng] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [anonymous, setAnonymous] = useState(true);
+  const [selectedWard,        setSelectedWard]        = useState(WARDS[0]);
+  const [severity,            setSeverity]            = useState('Medium');
+  const [title,               setTitle]               = useState('');
+  const [description,         setDescription]         = useState('');
+  const [address,             setAddress]             = useState('');
+  const [lat,                 setLat]                 = useState(null);
+  const [lng,                 setLng]                 = useState(null);
+  const [photoFile,           setPhotoFile]           = useState(null);
+  const [photoPreview,        setPhotoPreview]        = useState(null);
+  const [anonymous,           setAnonymous]           = useState(true);
 
   // ui state
-<<<<<<< Updated upstream
   const [gpsLoading,   setGpsLoading]   = useState(false);
   const [submitting,   setSubmitting]   = useState(false);
   const [error,        setError]        = useState('');
-=======
-  const [gpsLoading, setGpsLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
->>>>>>> Stashed changes
   const [successToken, setSuccessToken] = useState('');
+
   // duplicate detection
-  const [duplicates,       setDuplicates]       = useState([]);
-  const [showDupeModal,    setShowDupeModal]     = useState(false);
-  const [pendingSubmit,    setPendingSubmit]     = useState(false);
+  const [duplicates,    setDuplicates]    = useState([]);
+  const [showDupeModal, setShowDupeModal] = useState(false);
+  const [pendingSubmit, setPendingSubmit] = useState(false);
+
+  // pagination state
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
 
   function handleCategoryChange(cat) {
     setSelectedCategory(cat);
@@ -121,7 +115,7 @@ const ReportIssue = () => {
   function handlePhoto(file) {
     if (!file) return;
     if (!file.type.startsWith('image/')) { setError('Please upload an image file.'); return; }
-    if (file.size > 10 * 1024 * 1024) { setError('Image must be under 10MB.'); return; }
+    if (file.size > 10 * 1024 * 1024)   { setError('Image must be under 10MB.'); return; }
     setPhotoFile(file);
     setPhotoPreview(URL.createObjectURL(file));
     setError('');
@@ -150,17 +144,27 @@ const ReportIssue = () => {
     );
   }
 
+  function handleNext() {
+    setError('');
+    if (currentStep === 1) {
+      if (!title.trim() || !description.trim()) {
+        setError('Please enter a title and description.');
+        return;
+      }
+    }
+    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+  }
+
+  function handlePrev() {
+    setError('');
+    setCurrentStep(prev => Math.max(prev - 1, 1));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-<<<<<<< Updated upstream
     if (!user)               { setError('You must be signed in to submit a report.'); return; }
     if (!title.trim())       { setError('Please enter a title.'); return; }
-=======
-
-    if (!user) { setError('You must be signed in to submit a report.'); return; }
-    if (!title.trim()) { setError('Please enter a title.'); return; }
->>>>>>> Stashed changes
     if (!description.trim()) { setError('Please enter a description.'); return; }
 
     setSubmitting(true);
@@ -188,7 +192,6 @@ const ReportIssue = () => {
     }
   }
 
-<<<<<<< Updated upstream
   async function doSubmit(linkedId) {
     setSubmitting(true);
     setError('');
@@ -198,37 +201,15 @@ const ReportIssue = () => {
         userName:    user.displayName || '',
         userEmail:   user.email || '',
         category:    selectedCategory.label,
-=======
-      const token = genToken();
-
-      await addDoc(collection(db, 'complaints'), {
-        token,
-        userId: user.uid,
-        userEmail: user.email,
-        category: selectedCategory.label,
->>>>>>> Stashed changes
         subCategory: selectedSubCategory?.label || '',
         severity,
-        title: title.trim(),
+        title:       title.trim(),
         description: description.trim(),
-<<<<<<< Updated upstream
         ward:        selectedWard.label,
         address:     address.trim(),
         lat, lng,
         anonymous,
       }, photoFile, linkedId);
-=======
-        ward: selectedWard.label,
-        address: address.trim(),
-        lat: lat || null,
-        lng: lng || null,
-        photoURL,
-        anonymous,
-        status: 'Submitted',
-        createdAt: serverTimestamp(),
-      });
-
->>>>>>> Stashed changes
       setSuccessToken(token);
     } catch (err) {
       setError(err.message || 'Submission failed. Please try again.');
@@ -236,26 +217,6 @@ const ReportIssue = () => {
       setSubmitting(false);
       setPendingSubmit(false);
     }
-  }
-
-  // pagination state
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
-
-  function handleNext() {
-    setError('');
-    if (currentStep === 1) {
-      if (!title.trim() || !description.trim()) {
-        setError('Please enter a title and description.');
-        return;
-      }
-    }
-    setCurrentStep(prev => Math.min(prev + 1, totalSteps));
-  }
-
-  function handlePrev() {
-    setError('');
-    setCurrentStep(prev => Math.max(prev - 1, 1));
   }
 
   // ── Success screen ──────────────────────────────────────────────────────────
@@ -435,16 +396,17 @@ const ReportIssue = () => {
                         </div>
                       )}
                       <div className={selectedCategory.id === 'others' ? 'md:col-span-2 md:max-w-xs' : ''}>
-                        <label className="block text-sm font-semibold text-gray-900 mb-2">Severity & Traffic Impact</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Safety & Priority</label>
                         <div className="flex bg-gray-100 p-1 rounded-lg">
                           {SEVERITIES.map((s) => (
                             <button key={s} type="button" onClick={() => setSeverity(s)}
-                              className={`flex-1 py-2 text-sm rounded-md transition-all flex items-center justify-center gap-1.5 ${severity === s
-                                  ? `font-bold bg-white shadow-sm border border-gray-200 ${s === 'Minor' ? 'text-green-700' : s === 'Moderate' ? 'text-amber-700' : 'text-red-700'}`
+                              className={`flex-1 py-2 text-sm rounded-md transition-all flex items-center justify-center gap-1.5 ${
+                                severity === s
+                                  ? `font-bold bg-white shadow-sm border border-gray-200 ${s === 'Low' ? 'text-green-700' : s === 'Medium' ? 'text-amber-700' : s === 'High' ? 'text-orange-700' : 'text-red-700'}`
                                   : 'font-medium text-gray-600'
-                                }`}
+                              }`}
                             >
-                              {severity === s && <div className={`w-2 h-2 rounded-full ${s === 'Minor' ? 'bg-green-500' : s === 'Moderate' ? 'bg-amber-500' : 'bg-red-500'}`} />}
+                              {severity === s && <div className={`w-2 h-2 rounded-full ${s === 'Low' ? 'bg-green-500' : s === 'Medium' ? 'bg-amber-500' : s === 'High' ? 'bg-orange-500' : 'bg-red-500'}`} />}
                               {s}
                             </button>
                           ))}
@@ -489,48 +451,48 @@ const ReportIssue = () => {
               <>
                 {/* Section 3 — Location */}
                 <div className="p-6 md:p-8 relative">
-                <div className="absolute left-0 top-8 bottom-0 w-1 bg-blue-600 rounded-r-md hidden md:block" />
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-                  <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    Location & Geo-Tag
-                  </h2>
-                  <button type="button" onClick={detectGPS} disabled={gpsLoading}
-                    className="flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold border border-blue-200 transition-colors disabled:opacity-60">
-                    {gpsLoading ? <Loader2 size={16} className="animate-spin" /> : <Crosshair size={16} />}
-                    {gpsLoading ? 'Detecting...' : 'Detect GPS'}
-                  </button>
-                </div>
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Ward / Locality</label>
-                      <Dropdown options={WARDS} value={selectedWard} onChange={setSelectedWard} />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-2">Street Address / Landmark</label>
-                      <input type="text" value={address} onChange={e => setAddress(e.target.value)}
-                        placeholder="Street address or nearby landmark"
-                        className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                    </div>
+                  <div className="absolute left-0 top-8 bottom-0 w-1 bg-blue-600 rounded-r-md hidden md:block" />
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                      Location & Geo-Tag
+                    </h2>
+                    <button type="button" onClick={detectGPS} disabled={gpsLoading}
+                      className="flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-semibold border border-blue-200 transition-colors disabled:opacity-60">
+                      {gpsLoading ? <Loader2 size={16} className="animate-spin" /> : <Crosshair size={16} />}
+                      {gpsLoading ? 'Detecting...' : 'Detect GPS'}
+                    </button>
                   </div>
-                  <div className="h-64 bg-gray-200 rounded-lg border border-gray-300 relative overflow-hidden flex items-center justify-center">
-                    <div className="absolute inset-0 bg-[url('https://maps.wikimedia.org/osm-intl/13/5799/3820.png')] bg-cover bg-center opacity-70" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10 flex flex-col items-center">
-                      <div className="bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded shadow-lg mb-1 flex items-center gap-1">
-                        <MapPin size={12} /> {lat ? `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E` : '12.9716° N, 77.5946° E'}
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Ward / Locality</label>
+                        <Dropdown options={WARDS} value={selectedWard} onChange={setSelectedWard} />
                       </div>
-                      <MapPin size={32} className="text-red-500 drop-shadow-md" fill="#ef4444" />
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Street Address / Landmark</label>
+                        <input type="text" value={address} onChange={e => setAddress(e.target.value)}
+                          placeholder="Street address or nearby landmark"
+                          className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                      </div>
                     </div>
-                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-700">
-                      <div className={`w-2 h-2 rounded-full ${lat ? 'bg-green-500' : 'bg-gray-400'}`} />
-                      {lat ? 'GPS Captured' : 'GPS Accuracy: 4.6m'}
-                    </div>
-                    <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 text-xs font-medium text-gray-600">
-                      Drag pin to adjust
+                    <div className="h-64 bg-gray-200 rounded-lg border border-gray-300 relative overflow-hidden flex items-center justify-center">
+                      <div className="absolute inset-0 bg-[url('https://maps.wikimedia.org/osm-intl/13/5799/3820.png')] bg-cover bg-center opacity-70" />
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10 flex flex-col items-center">
+                        <div className="bg-slate-900 text-white text-xs font-bold px-2 py-1 rounded shadow-lg mb-1 flex items-center gap-1">
+                          <MapPin size={12} /> {lat ? `${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E` : '12.9716° N, 77.5946° E'}
+                        </div>
+                        <MapPin size={32} className="text-red-500 drop-shadow-md" fill="#ef4444" />
+                      </div>
+                      <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 flex items-center gap-2 text-xs font-semibold text-gray-700">
+                        <div className={`w-2 h-2 rounded-full ${lat ? 'bg-green-500' : 'bg-gray-400'}`} />
+                        {lat ? 'GPS Captured' : 'GPS Accuracy: 4.6m'}
+                      </div>
+                      <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-sm border border-gray-200 text-xs font-medium text-gray-600">
+                        Drag pin to adjust
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               </>
             )}
 
