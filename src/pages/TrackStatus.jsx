@@ -76,7 +76,6 @@ export default function TrackStatus() {
         {/* Search Section */}
         <section className="flex flex-col items-center gap-4 w-full max-w-2xl mx-auto text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Track Your Grievance</h1>
-          <p className="text-lg text-slate-600 mb-2">Enter your tracking ID or select from your submitted complaints below.</p>
           <p className="text-lg text-slate-600 mb-2">
             Enter your tracking ID {user ? 'or select from your submitted complaints below' : 'to check the real-time status of your issue'}.
           </p>
@@ -272,12 +271,6 @@ export default function TrackStatus() {
                 ))}
               </div>
             )}
-          </div>
-        )}
-
-        {!user && !complaint && (
-          <div className="text-center py-10 text-slate-500">
-            <p><a href="/auth" className="text-blue-600 font-semibold hover:underline">Sign in</a> to view your submitted complaints.</p>
           </div>
         )}
 
