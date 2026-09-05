@@ -16,9 +16,7 @@ const Footer = () => {
           {/* Column 1: Brand & Description (approx 35% width) */}
           <div className="lg:w-[35%] pr-6 mb-12 lg:mb-0">
             <div className="flex items-center gap-4 mb-6">
-              <div className="bg-[#2563eb] text-white p-3 rounded-2xl shadow-sm">
-                <Building2 size={28} strokeWidth={2} />
-              </div>
+              <img src="/logo.png" alt="PIRT Logo" className="w-7 h-7 mb-5 object-contain" />
               <div className="flex flex-col">
                 <span className="font-bold text-[28px] text-[#0f172a] leading-none mb-1.5 tracking-tight">PIRT</span>
                 <span className="text-[13px] font-semibold text-slate-500 tracking-wide">Public Issue Resolution Tracker</span>

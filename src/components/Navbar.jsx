@@ -56,12 +56,8 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Actions — Desktop */}
           <div className="hidden md:flex items-center space-x-5 shrink-0">
-            <button className="text-slate-400 hover:text-blue-600 transition-colors">
-              <Search size={20} />
-            </button>
-            <div className="h-5 w-px bg-gray-200" />
+
 
             {user ? (
               <div className="relative">
