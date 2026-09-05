@@ -13,8 +13,28 @@ export function AuthProvider({ children }) {
   async function loadProfile(uid) {
     try {
       const snap = await getDoc(doc(db, 'users', uid));
-      setProfile(snap.exists() ? snap.data() : null);
-    } catch { setProfile(null); }
+      if (snap.exists()) {
+        setProfile(snap.data());
+      } else {
+        // Self-heal: create missing profile doc with default role
+        const fallback = {
+          uid,
+          fullName: auth.currentUser?.displayName || 'Citizen',
+          email: auth.currentUser?.email || '',
+          role: 'citizen',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+        try {
+          await setDoc(doc(db, 'users', uid), fallback);
+          setProfile(fallback);
+        } catch {
+          setProfile({ role: 'citizen', fullName: auth.currentUser?.displayName || 'Citizen' });
+        }
+      }
+    } catch {
+      setProfile({ role: 'citizen', fullName: auth.currentUser?.displayName || 'Citizen' });
+    }
   }
 
   useEffect(() => {
@@ -28,12 +48,20 @@ export function AuthProvider({ children }) {
 
   const signUp = async (email, password, name) => {
     const { user: u } = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(u, { displayName: name });
-    // Create user profile doc with default citizen role
-    await setDoc(doc(db, 'users', u.uid), {
-      uid: u.uid, fullName: name, email, role: 'citizen',
-      createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
-    });
+    try {
+      await updateProfile(u, { displayName: name });
+    } catch (e) {
+      console.warn('updateProfile warning:', e);
+    }
+    try {
+      // Create user profile doc with default citizen role
+      await setDoc(doc(db, 'users', u.uid), {
+        uid: u.uid, fullName: name, email, role: 'citizen',
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+      });
+    } catch (e) {
+      console.warn('setDoc user profile warning:', e);
+    }
   };
 
   const signIn = (email, password) => signInWithEmailAndPassword(auth, email, password);

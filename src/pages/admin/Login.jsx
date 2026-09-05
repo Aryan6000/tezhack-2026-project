@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../lib/firebase';
+import { adminAuth, adminDb } from '../../lib/firebase';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { ShieldCheck, Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -26,26 +26,31 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
+      const { user } = await signInWithEmailAndPassword(adminAuth, email, password);
 
       // Check role in Firestore — must be "admin"
       try {
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        if (!snap.exists() || snap.data()?.role !== 'admin') {
-          await auth.signOut();
-          setError('Access denied. Admin accounts only.');
+        const snap = await getDoc(doc(adminDb, 'users', user.uid));
+        if (!snap.exists()) {
+          await adminAuth.signOut();
+          setError(`No profile found in Firestore for UID (${user.uid}). Please create a document in 'users' collection with role: "admin".`);
+          setLoading(false);
+          return;
+        }
+        if (snap.data()?.role !== 'admin') {
+          await adminAuth.signOut();
+          setError(`Access denied. Account has role "${snap.data()?.role || 'none'}", but "admin" is required.`);
           setLoading(false);
           return;
         }
       } catch (firestoreErr) {
-        // Firestore read failed — sign out for security
-        await auth.signOut();
-        setError('Could not verify admin role. Please ensure your account is set up correctly.');
+        await adminAuth.signOut();
+        setError(`Could not verify admin role: ${firestoreErr.message}. Ensure your Firebase Firestore Security Rules allow read access to /users/${user.uid}.`);
         setLoading(false);
         return;
       }
 
-      window.location.href = '/admin/dashboard';
+      navigate('/admin/dashboard', { replace: true });
     } catch (err) {
       const map = {
         'auth/invalid-credential': 'Invalid email or password.',

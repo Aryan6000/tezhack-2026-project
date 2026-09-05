@@ -32,9 +32,10 @@ const Auth = () => {
     setSignInLoading(true);
     try {
       await signIn(signInEmail, signInPassword);
-      navigate(from, { replace: true });
+      const target = (from && !from.startsWith('/admin')) ? from : '/';
+      navigate(target, { replace: true });
     } catch (err) {
-      setSignInError(friendlyError(err.code));
+      setSignInError(friendlyError(err.code || err.message));
     } finally {
       setSignInLoading(false);
     }
@@ -50,9 +51,10 @@ const Auth = () => {
     setRegLoading(true);
     try {
       await signUp(regEmail, regPassword, regName);
-      setRegSuccess(true);
+      const target = (from && !from.startsWith('/admin')) ? from : '/';
+      navigate(target, { replace: true });
     } catch (err) {
-      setRegError(friendlyError(err.code));
+      setRegError(friendlyError(err.code || err.message));
     } finally {
       setRegLoading(false);
     }
@@ -63,13 +65,15 @@ const Auth = () => {
       'auth/invalid-credential': 'Invalid email or password.',
       'auth/user-not-found': 'No account found with this email.',
       'auth/wrong-password': 'Incorrect password.',
-      'auth/email-already-in-use': 'An account with this email already exists.',
+      'auth/email-already-in-use': 'An account with this email already exists. Try signing in instead.',
       'auth/invalid-email': 'Please enter a valid email address.',
       'auth/weak-password': 'Password must be at least 6 characters.',
       'auth/too-many-requests': 'Too many attempts. Please try again later.',
       'auth/network-request-failed': 'Network error. Check your connection.',
+      'auth/operation-not-allowed': 'Email/password sign-in is not enabled in Firebase Console (Authentication > Sign-in method).',
+      'auth/popup-closed-by-user': 'Authentication popup was closed.',
     };
-    return map[code] || 'Something went wrong. Please try again.';
+    return map[code] || (typeof code === 'string' && code.startsWith('auth/') ? `Error (${code})` : 'Something went wrong. Please try again.');
   }
 
   return (

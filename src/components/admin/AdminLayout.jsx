@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
-import { auth } from '../../lib/firebase';
+import { adminAuth } from '../../lib/firebase';
 import {
   LayoutDashboard, FileText, AlertTriangle, Copy,
   BarChart3, Building2, LogOut, Menu, X,
@@ -23,7 +23,7 @@ export default function AdminLayout({ children, adminEmail }) {
   const [open, setOpen] = useState(false);
 
   async function handleLogout() {
-    await signOut(auth);
+    await signOut(adminAuth);
     navigate('/admin');
   }
 

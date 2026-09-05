@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
+import { adminAuth, adminDb } from '../lib/firebase';
 
 const AdminAuthContext = createContext(null);
 
@@ -11,17 +11,16 @@ export function AdminAuthProvider({ children }) {
   const [loading,   setLoading]   = useState(true);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, async (u) => {
+    return onAuthStateChanged(adminAuth, async (u) => {
       if (u) {
         try {
-          const snap = await getDoc(doc(db, 'users', u.uid));
+          const snap = await getDoc(doc(adminDb, 'users', u.uid));
           const role = snap.exists() ? snap.data()?.role : null;
           if (role === 'admin') {
             setAdminUser(u);
             setIsAdmin(true);
           } else {
-            // Signed in but not admin — sign out silently
-            await auth.signOut();
+            // User is a citizen or other role, not admin
             setAdminUser(null);
             setIsAdmin(false);
           }
