@@ -2,13 +2,11 @@ import { useState, useRef } from 'react';
 import {
   ShieldCheck, MapPin, AlertCircle, CheckCircle2, Info,
   Image as ImageIcon, Trash2, Crosshair, Droplets,
-  Lightbulb, TreePine, VolumeX, Map, Loader2, X
+  Lightbulb, TreePine, VolumeX, Map, Loader2, X, Users
 } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../lib/firebase';
 import { useAuth } from '../context/AuthContext';
 import Dropdown from '../components/Dropdown';
+import { submitComplaint, findDuplicates } from '../services/complaintService';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 const CATEGORIES = [
@@ -100,10 +98,14 @@ const ReportIssue = () => {
   const [anonymous, setAnonymous] = useState(true);
 
   // ui state
-  const [gpsLoading,  setGpsLoading]  = useState(false);
-  const [submitting,  setSubmitting]  = useState(false);
-  const [error,       setError]       = useState('');
+  const [gpsLoading,   setGpsLoading]   = useState(false);
+  const [submitting,   setSubmitting]   = useState(false);
+  const [error,        setError]        = useState('');
   const [successToken, setSuccessToken] = useState('');
+  // duplicate detection
+  const [duplicates,       setDuplicates]       = useState([]);
+  const [showDupeModal,    setShowDupeModal]     = useState(false);
+  const [pendingSubmit,    setPendingSubmit]     = useState(false);
 
   function handleCategoryChange(cat) {
     setSelectedCategory(cat);
@@ -145,27 +147,43 @@ const ReportIssue = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-
-    if (!user)          { setError('You must be signed in to submit a report.'); return; }
-    if (!title.trim())  { setError('Please enter a title.'); return; }
+    if (!user)               { setError('You must be signed in to submit a report.'); return; }
+    if (!title.trim())       { setError('Please enter a title.'); return; }
     if (!description.trim()) { setError('Please enter a description.'); return; }
 
     setSubmitting(true);
     try {
-      // upload photo if selected
-      let photoURL = '';
-      if (photoFile) {
-        const storageRef = ref(storage, `complaints/${user.uid}/${Date.now()}_${photoFile.name}`);
-        await uploadBytes(storageRef, photoFile);
-        photoURL = await getDownloadURL(storageRef);
+      // Check for duplicates first
+      if (!pendingSubmit) {
+        const dupes = await findDuplicates({
+          category: selectedCategory.label,
+          lat, lng,
+          title: title.trim(),
+          description: description.trim(),
+        });
+        if (dupes.length > 0) {
+          setDuplicates(dupes);
+          setShowDupeModal(true);
+          setSubmitting(false);
+          return;
+        }
       }
+      await doSubmit(null);
+    } catch (err) {
+      setError(err.message || 'Submission failed. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
-      const token = genToken();
-
-      await addDoc(collection(db, 'complaints'), {
-        token,
+  async function doSubmit(linkedId) {
+    setSubmitting(true);
+    setError('');
+    try {
+      const { token } = await submitComplaint({
         userId:      user.uid,
-        userEmail:   user.email,
+        userName:    user.displayName || '',
+        userEmail:   user.email || '',
         category:    selectedCategory.label,
         subCategory: selectedSubCategory?.label || '',
         severity,
@@ -173,19 +191,15 @@ const ReportIssue = () => {
         description: description.trim(),
         ward:        selectedWard.label,
         address:     address.trim(),
-        lat:         lat || null,
-        lng:         lng || null,
-        photoURL,
+        lat, lng,
         anonymous,
-        status:      'Submitted',
-        createdAt:   serverTimestamp(),
-      });
-
+      }, photoFile, linkedId);
       setSuccessToken(token);
     } catch (err) {
       setError(err.message || 'Submission failed. Please try again.');
     } finally {
       setSubmitting(false);
+      setPendingSubmit(false);
     }
   }
 
@@ -216,6 +230,61 @@ const ReportIssue = () => {
   // ── Form ────────────────────────────────────────────────────────────────────
   return (
     <div className="bg-gray-50 min-h-screen py-10">
+
+      {/* Duplicate Warning Modal */}
+      {showDupeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="bg-amber-50 border-b border-amber-100 px-6 py-4 flex items-start gap-3">
+              <AlertCircle className="text-amber-500 shrink-0 mt-0.5" size={22} />
+              <div>
+                <h3 className="font-bold text-gray-900">⚠ Possible Similar Issue Found</h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  {duplicates[0]?.reportCount > 1
+                    ? `${duplicates[0].reportCount} people have already reported an issue about this location.`
+                    : 'A similar issue has already been reported nearby.'}
+                </p>
+              </div>
+            </div>
+            <div className="p-5 space-y-3 max-h-64 overflow-y-auto">
+              {duplicates.map(d => (
+                <div key={d.id} className="border border-amber-200 bg-amber-50 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-mono text-xs font-bold text-gray-500">{d.token}</span>
+                    <span className="text-xs bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">
+                      {d.score}% match
+                    </span>
+                  </div>
+                  <p className="font-semibold text-gray-900 text-sm">{d.title}</p>
+                  {d.address && <p className="text-xs text-gray-500 mt-1 flex items-center gap-1"><MapPin size={11}/> {d.address}</p>}
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-xs text-blue-600 font-medium">Status: {d.status}</span>
+                    {(d.reportCount || 1) > 1 && (
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        <Users size={11}/> {d.reportCount} citizens reported
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="px-5 pb-5 flex gap-3">
+              <button
+                onClick={() => setShowDupeModal(false)}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => { setShowDupeModal(false); setPendingSubmit(true); doSubmit(duplicates[0]?.id); }}
+                className="flex-1 px-4 py-3 bg-slate-900 text-white rounded-xl font-semibold text-sm hover:bg-slate-800"
+              >
+                Submit Anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}

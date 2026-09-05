@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Building2, Menu, X, Search, ArrowRight, LogOut, User } from 'lucide-react';
+import { Building2, Menu, X, Search, ArrowRight, LogOut, User, LayoutDashboard } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,7 @@ const Navbar = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logOut } = useAuth();
+  const { user, logOut, isAdmin } = useAuth();
   const handleSignOut = async () => { await logOut(); navigate('/'); };
 
   const navLinks = [
@@ -72,10 +72,15 @@ const Navbar = () => {
                   <span className="max-w-[120px] truncate">{user.displayName || user.email?.split('@')[0]}</span>
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                    {isAdmin && (
+                      <Link to="/admin" onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-blue-700 hover:bg-blue-50 font-semibold">
+                        <LayoutDashboard size={15} /> Admin Dashboard
+                      </Link>
+                    )}
                     <button onClick={() => { setUserMenuOpen(false); handleSignOut(); }}
-                      className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50"
-                    >
+                      className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
                       <LogOut size={15} /> Sign Out
                     </button>
                   </div>
