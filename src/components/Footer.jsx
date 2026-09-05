@@ -86,13 +86,7 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Decorative Text (Right Side Floating) */}
-          <div className="hidden lg:block lg:w-[15%] relative">
-            <div className="absolute top-10 -right-4 -rotate-[15deg] font-caveat text-[32px] leading-tight text-[#2563eb] whitespace-nowrap">
-              Cleaner Cities<br/>
-              <span className="ml-8 border-b-2 border-blue-600/30 pb-1">Happier Lives</span>
-            </div>
-          </div>
+
           
         </div>
       </div>
@@ -150,11 +144,7 @@ const Footer = () => {
              <circle cx="35" cy="50" r="10" />
           </g>
           
-          {/* Birds */}
-          <g transform="translate(850, 130)" stroke="#aecbf8" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
-             <path d="M0,12 Q6,0 12,12 Q18,0 24,12" />
-             <path d="M35,35 Q41,25 47,35 Q53,25 59,35" />
-          </g>
+
 
           {/* Foreground Waves */}
           <path fill="#e6f0ff" d="M0,210 C320,110 420,280 720,220 C1020,160 1120,320 1440,220 L1440,320 L0,320 Z" opacity="0.9"/>
