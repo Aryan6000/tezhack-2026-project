@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Building2, Menu, X, Search, ArrowRight } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Search, ArrowRight, User, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
@@ -21,8 +21,8 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white sticky top-0 z-50 border-b border-gray-100/50 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 z-50 w-full bg-white/90 border-b border-gray-100/50 backdrop-blur-md">
+      <div className="w-full px-4 sm:px-6 lg:px-12">
         <div className="flex items-center justify-between h-[76px]">
 
           {/* Logo */}

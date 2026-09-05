@@ -36,7 +36,7 @@ const AnimatedRoutes = () => {
 function App() {
   return (
     <Router>
-      <div className="min-h-screen font-sans bg-white text-gray-900 flex flex-col overflow-hidden">
+      <div className="min-h-screen font-sans bg-white text-gray-900 flex flex-col">
         <Navbar />
         <AnimatedRoutes />
         <Footer />
