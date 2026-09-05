@@ -31,22 +31,22 @@ const Hero = () => {
         <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full border-[60px] border-[#f0f5ff] opacity-50" />
         <div className="absolute bottom-20 -right-20 w-[600px] h-[600px] rounded-full border-[80px] border-[#f0f5ff] opacity-50" />
       </div>
-      
+
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Column */}
           <div className="max-w-2xl">
-                        
+
             {/* Headlines */}
             <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 mb-6 tracking-tight leading-[1.05]">
               A Cleaner City<br />
               <span className="text-blue-600">Starts With You</span>
             </h1>
-            
+
             <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
               Report civic issues, track real-time resolution, and hold departments accountable. Geo-tag problems in 60 seconds and help build a better city.
             </p>
-            
+
             {/* Tracker Box */}
             <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 p-2 mb-12 relative z-20">
               <div className="flex items-center justify-between px-4 pt-3 pb-4 border-b border-gray-50">
@@ -62,14 +62,14 @@ const Hero = () => {
                   Need help? <HelpCircle size={14} />
                 </button>
               </div>
-              
+
               <div className="p-4 pt-5">
                 <div className="flex flex-col sm:flex-row gap-3 mb-5">
                   <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                      type="text" 
-                      placeholder="Enter ticket ID (e.g. CIV-2025-8849)" 
+                    <input
+                      type="text"
+                      placeholder="Enter ticket ID (e.g. CIV-2025-8849)"
                       className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors text-sm"
                     />
                   </div>
@@ -77,7 +77,7 @@ const Hero = () => {
                     Track Issue <ArrowRight size={18} />
                   </button>
                 </div>
-                
+
                 <div className="border border-amber-100 bg-[#fffdf0] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-3">
                     <div className="bg-amber-100/80 p-1.5 rounded-full mt-0.5 shrink-0">
@@ -109,7 +109,7 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Stats */}
             <div className="flex flex-wrap items-center gap-8 md:gap-12 pb-4">
               <div className="flex items-center gap-3">
@@ -143,27 +143,27 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Right Column / Image Area */}
           <div className="relative h-[450px] sm:h-[550px] lg:h-full lg:min-h-[600px] mt-8 lg:mt-0 z-10">
             {/* Main Image */}
             <div className="absolute inset-0 right-[-20px] lg:right-[-50px] bg-gray-100 rounded-[30px] lg:rounded-[40px] rounded-tl-[100px] lg:rounded-tl-[160px] overflow-hidden shadow-2xl">
               <img src="/hero-image.webp" alt="Clean City" className="w-full h-full object-cover" />
             </div>
-            
+
             {/* Connecting SVG Line */}
             <svg className="absolute top-10 lg:top-20 -left-6 w-full h-full pointer-events-none text-blue-300 z-10" viewBox="0 0 400 400" preserveAspectRatio="none">
-              <path 
-                d="M 50 20 Q 200 20 200 120 T 350 180" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeDasharray="6 6" 
+              <path
+                d="M 50 20 Q 200 20 200 120 T 350 180"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeDasharray="6 6"
               />
             </svg>
-            
+
             {/* Floating Cards (positioned absolute) */}
-            
+
             {/* Report */}
             <div className="absolute top-6 lg:top-12 -left-2 lg:-left-8 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#2563eb] flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/40">
@@ -175,7 +175,7 @@ const Hero = () => {
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
-            
+
             {/* Track */}
             <div className="absolute top-32 lg:top-48 left-10 lg:left-16 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[220px] lg:w-64 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#10b981] flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-500/40">
@@ -187,7 +187,7 @@ const Hero = () => {
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
-            
+
             {/* See Change */}
             <div className="absolute top-[220px] lg:top-[280px] right-2 lg:right-6 bg-white/95 backdrop-blur rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 w-[240px] lg:w-72 border border-white/40 z-20 hover:-translate-y-1 transition-transform">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-[#8b5cf6] flex items-center justify-center text-white shrink-0 shadow-lg shadow-purple-500/40">
@@ -199,7 +199,7 @@ const Hero = () => {
               </div>
               <ChevronRight size={16} className="text-gray-300 ml-auto" />
             </div>
-            
+
             {/* Bottom Badge */}
             <div className="absolute bottom-6 lg:bottom-16 left-6 lg:left-12 bg-white/90 backdrop-blur-md rounded-2xl p-3 lg:p-4 shadow-xl flex items-center gap-3 lg:gap-4 border border-white/50 z-20">
               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
@@ -254,42 +254,42 @@ const Categories = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <CategoryCard 
+          <CategoryCard
             icon={AlertCircle}
             title="Roads & Potholes"
             activeCount="312"
             desc="Potholes, broken footpaths, road cracks, damaged road signs, and illegal obstacles."
             sla="48 Hours"
           />
-          <CategoryCard 
+          <CategoryCard
             icon={Trash2}
             title="Waste Management"
             activeCount="184"
             desc="Overflowing public dustbins, uncollected household waste, and open dump hazards."
             sla="24 Hours"
           />
-          <CategoryCard 
+          <CategoryCard
             icon={Droplets}
             title="Water Supply & Drainage"
             activeCount="98"
             desc="Burst pipelines, water contamination, sewer leaks, and clogged rainwater drains."
             sla="12-24 Hours"
           />
-          <CategoryCard 
+          <CategoryCard
             icon={Lightbulb}
             title="Street Lighting & Power"
             activeCount="142"
             desc="Burnt out street lamps, hazardous electrical wires, and faulty timer switches."
             sla="24 Hours"
           />
-          <CategoryCard 
+          <CategoryCard
             icon={TreePine}
             title="Public Parks & Trees"
             activeCount="67"
             desc="Dangerous broken branches, vandalized playground amenities, and park irrigation leaks."
             sla="48 Hours"
           />
-          <CategoryCard 
+          <CategoryCard
             icon={VolumeX}
             title="Pollution & Noise"
             activeCount="54"
@@ -332,25 +332,25 @@ const Workflow = () => {
       </div>
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 lg:gap-8 relative">
-        <WorkflowStep 
+        <WorkflowStep
           number="1"
           icon={Camera}
           title="Report & Geo-tag"
           desc="Snap a photo on site. The system auto-captures coordinates and checks duplicates."
         />
-        <WorkflowStep 
+        <WorkflowStep
           number="2"
           icon={Cpu}
           title="AI & Officer Dispatch"
           desc="Assigned instantly to the designated Ward Engineer with an official SLA countdown."
         />
-        <WorkflowStep 
+        <WorkflowStep
           number="3"
           icon={MapPin}
           title="Field Action"
           desc="Municipal ground crew resolves the issue and uploads photographic completion proof."
         />
-        <WorkflowStep 
+        <WorkflowStep
           number="4"
           icon={UserCheck}
           title="Citizen Verification"
@@ -421,7 +421,7 @@ const LiveFeed = () => {
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          <LiveFeedItem 
+          <LiveFeedItem
             status="Resolved"
             token="CIV-2025-8852"
             title="Overflowing Municipal Garbage Bin Cleared"
@@ -430,7 +430,7 @@ const LiveFeed = () => {
             meta1="Resolved 3 hrs ago"
             meta2="SLA: 24h"
           />
-          <LiveFeedItem 
+          <LiveFeedItem
             status="In Progress"
             token="CIV-2025-8849"
             title="Road Cavity & Drainage Pothole"
@@ -439,7 +439,7 @@ const LiveFeed = () => {
             meta1="14h Remaining"
             meta2="42 Upvotes"
           />
-          <LiveFeedItem 
+          <LiveFeedItem
             status="Under Review"
             token="CIV-2025-8873"
             title="Streetlight Cluster Dark Spot"

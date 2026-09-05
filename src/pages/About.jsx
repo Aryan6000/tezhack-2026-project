@@ -1,4 +1,4 @@
-import { Shield, Target, Users, MapPin, Zap } from 'lucide-react';
+import { Shield, Users, MapPin, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const About = () => {
@@ -38,23 +38,23 @@ const About = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <ValueCard 
-              icon={Shield} 
-              title="Transparency First" 
+            <ValueCard
+              icon={Shield}
+              title="Transparency First"
               desc="Every reported issue is publicly tracked. No hidden tickets, no unrecorded grievances."
               color="text-blue-600"
               bg="bg-blue-50"
             />
-            <ValueCard 
-              icon={Zap} 
-              title="Speed & SLA" 
+            <ValueCard
+              icon={Zap}
+              title="Speed & SLA"
               desc="Issues are routed directly to the responsible ward officers with strict resolution timelines."
               color="text-amber-600"
               bg="bg-amber-50"
             />
-            <ValueCard 
-              icon={Users} 
-              title="Citizen Verified" 
+            <ValueCard
+              icon={Users}
+              title="Citizen Verified"
               desc="A ticket is only marked as resolved when the reporting citizen approves the fix."
               color="text-emerald-600"
               bg="bg-emerald-50"
@@ -83,8 +83,8 @@ const About = () => {
           </div>
           <div className="flex-1 w-full relative">
             <div className="aspect-square bg-slate-100 rounded-3xl overflow-hidden shadow-inner relative">
-               <img src="/hero-image.webp" alt="Clean City" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-               <div className="absolute inset-0 bg-blue-600/10 mix-blend-overlay pointer-events-none"></div>
+              <img src="/hero-image.webp" alt="Clean City" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-blue-600/10 mix-blend-overlay pointer-events-none"></div>
             </div>
           </div>
         </div>
