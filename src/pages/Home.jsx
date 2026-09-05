@@ -54,9 +54,6 @@ const Hero = () => {
                   <button className="text-blue-600 font-bold text-sm border-b-2 border-blue-600 pb-1 flex items-center gap-2">
                     <Search size={16} /> Track an Issue
                   </button>
-                  <Link to="/report" className="text-slate-500 font-medium text-sm hover:text-slate-900 pb-1 flex items-center gap-2 transition-colors">
-                    <FileText size={16} /> File a New Report
-                  </Link>
                 </div>
                 <button className="text-slate-400 text-sm flex items-center gap-1 hover:text-slate-600 transition-colors hidden sm:flex">
                   Need help? <HelpCircle size={14} />
@@ -64,7 +61,7 @@ const Hero = () => {
               </div>
 
               <div className="p-4 pt-5">
-                <div className="flex flex-col sm:flex-row gap-3 mb-5">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -76,36 +73,6 @@ const Hero = () => {
                   <button className="bg-[#2563eb] hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm shadow-blue-500/30">
                     Track Issue <ArrowRight size={18} />
                   </button>
-                </div>
-
-                <div className="border border-amber-100 bg-[#fffdf0] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="bg-amber-100/80 p-1.5 rounded-full mt-0.5 shrink-0">
-                      <AlertCircle className="text-amber-600" size={16} />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-slate-900 text-sm">MCN-2025-8849</span>
-                        <span className="text-gray-300">•</span>
-                        <span className="text-slate-700 font-medium text-sm hidden sm:inline">Road Cavity & Drainage Pothole</span>
-                      </div>
-                      <div className="text-[13px] text-slate-500 flex flex-wrap gap-x-2">
-                        <span>Ward 14</span>
-                        <span>•</span>
-                        <span>Dept. of Roads</span>
-                        <span>•</span>
-                        <span>Assigned to Er. R. Nair</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1.5">
-                    <span className="bg-[#fde68a] text-amber-900 text-[11px] font-bold px-3 py-1 rounded-full whitespace-nowrap">
-                      In Progress
-                    </span>
-                    <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">
-                      SLA: 14h left
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
