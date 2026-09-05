@@ -8,6 +8,8 @@ import ExploreIssues from './pages/ExploreIssues';
 import Auth from './pages/Auth';
 import TrackStatus from './pages/TrackStatus';
 
+import About from './pages/About';
+
 const AnimatedRoutes = () => {
   const location = useLocation();
   
@@ -23,6 +25,7 @@ const AnimatedRoutes = () => {
       >
         <Routes location={location}>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/report" element={<ReportIssue />} />
           <Route path="/explore" element={<ExploreIssues />} />
           <Route path="/auth" element={<Auth />} />

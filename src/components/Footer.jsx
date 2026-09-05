@@ -79,7 +79,7 @@ const Footer = () => {
           <div className="lg:w-[15%] px-2 lg:px-6">
             <h4 className="font-bold text-[#0f172a] mb-6 text-[15px]">About</h4>
             <ul className="space-y-4 text-[14px] text-slate-500 font-medium">
-              <li><Link to="#" className="hover:text-blue-600 transition-colors">Our Mission</Link></li>
+              <li><Link to="/about" className="hover:text-blue-600 transition-colors">Our Mission</Link></li>
               <li><Link to="#" className="hover:text-blue-600 transition-colors">Privacy Policy</Link></li>
               <li><Link to="#" className="hover:text-blue-600 transition-colors">Terms of Service</Link></li>
               <li><Link to="#" className="hover:text-blue-600 transition-colors">Accessibility</Link></li>
