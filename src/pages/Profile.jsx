@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User, Mail, Calendar, MapPin, AlertCircle, CheckCircle2, Clock, Loader2, FileText, Activity } from 'lucide-react';
+import { User, Mail, Calendar, MapPin, AlertCircle, CheckCircle2, Clock, Loader2, FileText, Activity, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { fetchMyComplaints } from '../services/complaintService';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,6 +34,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -102,12 +103,48 @@ const Profile = () => {
             </div>
           </div>
           
-          <div className="shrink-0">
-            <Link to="/report" className="px-6 py-2.5 bg-[#2563eb] text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm inline-block">
+          <div className="shrink-0 flex flex-col gap-3 w-full md:w-auto mt-4 md:mt-0">
+            <button 
+              onClick={() => setIsEditing(!isEditing)} 
+              className="w-full md:w-auto px-6 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2"
+            >
+              Edit Profile <ChevronDown size={16} className={`transition-transform ${isEditing ? 'rotate-180' : ''}`} />
+            </button>
+            <Link to="/report" className="w-full md:w-auto text-center px-6 py-2.5 bg-[#2563eb] text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-sm inline-block">
               Report New Issue
             </Link>
           </div>
         </div>
+
+        {/* Edit Profile Dropdown Section */}
+        {isEditing && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8"
+          >
+            <h3 className="text-lg font-bold text-gray-900 mb-6">Edit Profile Details</h3>
+            <form className="space-y-5 max-w-xl">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
+                <input type="text" defaultValue={user.displayName || profile?.fullName} className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+                <input type="email" defaultValue={user.email} disabled className="w-full px-4 py-2.5 border border-gray-200 bg-gray-50 text-gray-500 rounded-xl cursor-not-allowed text-sm" />
+                <p className="text-xs text-gray-500 mt-1.5">Email address is linked to your authentication provider and cannot be changed.</p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+                <input type="tel" placeholder="+91 XXXXX XXXXX" className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-shadow text-sm" />
+              </div>
+              <div className="pt-2 flex gap-3">
+                <button type="button" onClick={() => setIsEditing(false)} className="px-5 py-2.5 border border-gray-300 rounded-xl font-semibold text-sm text-gray-700 hover:bg-gray-50 transition-colors">Cancel</button>
+                <button type="button" onClick={() => setIsEditing(false)} className="px-5 py-2.5 bg-slate-900 text-white rounded-xl font-semibold text-sm hover:bg-slate-800 transition-colors shadow-sm">Save Changes</button>
+              </div>
+            </form>
+          </motion.div>
+        )}
 
         {/* Complaints List Section */}
         <div>

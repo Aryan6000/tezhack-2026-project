@@ -19,10 +19,12 @@ import {
   HelpCircle,
   ArrowRight,
   Settings,
-  Leaf
+  Leaf,
+  Loader2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { fetchPublicComplaints } from '../services/complaintService';
 
 const Hero = () => {
   const [trackToken, setTrackToken] = useState('');
@@ -347,26 +349,30 @@ const Workflow = () => {
 
 const LiveFeedItem = ({ status, token, title, location, desc, meta1, meta2 }) => {
   const statusColors = {
-    'Resolved': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'Submitted': 'bg-gray-100 text-gray-700 border-gray-200',
+    'Acknowledged': 'bg-blue-100 text-blue-700 border-blue-200',
+    'Under Review': 'bg-blue-100 text-blue-700 border-blue-200',
     'In Progress': 'bg-amber-100 text-amber-700 border-amber-200',
-    'Under Review': 'bg-blue-100 text-blue-700 border-blue-200'
+    'Resolved': 'bg-emerald-100 text-emerald-700 border-emerald-200',
   };
 
   const statusIcons = {
-    'Resolved': <CheckCircle2 className="text-emerald-500" size={24} />,
+    'Submitted': <FileText className="text-gray-500" size={24} />,
+    'Acknowledged': <Search className="text-blue-500" size={24} />,
+    'Under Review': <Search className="text-blue-500" size={24} />,
     'In Progress': <Clock className="text-amber-500" size={24} />,
-    'Under Review': <Search className="text-blue-500" size={24} />
+    'Resolved': <CheckCircle2 className="text-emerald-500" size={24} />,
   };
 
   return (
     <div className="flex gap-4 p-6 border-b border-gray-100 hover:bg-gray-50 transition-colors">
       <div className="shrink-0 mt-1">
-        {statusIcons[status]}
+        {statusIcons[status] || <FileText className="text-gray-500" size={24} />}
       </div>
       <div className="flex-grow">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
           <span className="font-mono text-sm font-bold text-gray-900">{token}</span>
-          <span className={`text-xs font-bold px-2.5 py-0.5 rounded border ${statusColors[status]}`}>
+          <span className={`text-xs font-bold px-2.5 py-0.5 rounded border ${statusColors[status] || statusColors['Submitted']}`}>
             {status}
           </span>
           <span className="text-sm text-gray-500 hidden sm:inline">•</span>
@@ -386,6 +392,43 @@ const LiveFeedItem = ({ status, token, title, location, desc, meta1, meta2 }) =>
 };
 
 const LiveFeed = () => {
+  const [allComplaints, setAllComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedWard, setSelectedWard] = useState('All Wards');
+  
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await fetchPublicComplaints();
+        setAllComplaints(data);
+      } catch (err) {
+        console.error("Failed to load feed:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const filtered = selectedWard === 'All Wards' 
+    ? allComplaints 
+    : allComplaints.filter(c => c.ward && c.ward.includes(selectedWard));
+
+  const displayItems = useMemo(() => {
+    return [...filtered].sort(() => 0.5 - Math.random()).slice(0, 4);
+  }, [filtered]);
+
+  const wards = ['All Wards', 'Ward 14', 'Ward 42', 'Ward 88'];
+
+  const formatTimeAgo = (timestamp) => {
+    if (!timestamp) return 'Recently';
+    const date = timestamp.seconds ? new Date(timestamp.seconds * 1000) : new Date(timestamp);
+    const diff = (Date.now() - date.getTime()) / 1000;
+    if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
+
   return (
     <section className="bg-gray-50 py-20 px-4">
       <div className="max-w-5xl mx-auto">
@@ -396,41 +439,40 @@ const LiveFeed = () => {
             <p className="text-gray-600">Real-time public status updates across wards.</p>
           </div>
           <div className="flex bg-white rounded-lg p-1 border border-gray-200">
-            <button className="px-4 py-2 bg-slate-900 text-white rounded-md text-sm font-medium">All Wards</button>
-            <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm font-medium transition-colors">Ward 14</button>
-            <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm font-medium transition-colors">Ward 42</button>
-            <button className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm font-medium transition-colors">Ward 88</button>
+            {wards.map(w => (
+              <button 
+                key={w}
+                onClick={() => setSelectedWard(w)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${selectedWard === w ? 'bg-slate-900 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                {w}
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-          <LiveFeedItem
-            status="Resolved"
-            token="CIV-2025-8852"
-            title="Overflowing Municipal Garbage Bin Cleared"
-            location="Ward 14, Commercial Zone"
-            desc="Sanitation crew dispatched compactor truck. Cleared and disinfected within 11 hours."
-            meta1="Resolved 3 hrs ago"
-            meta2="SLA: 24h"
-          />
-          <LiveFeedItem
-            status="In Progress"
-            token="CIV-2025-8849"
-            title="Road Cavity & Drainage Pothole"
-            location="Sector 8 Outer Ring"
-            desc="Asphalt leveling crew and JCB on site. Assigned to Er. R. Nair."
-            meta1="14h Remaining"
-            meta2="42 Upvotes"
-          />
-          <LiveFeedItem
-            status="Under Review"
-            token="CIV-2025-8873"
-            title="Streetlight Cluster Dark Spot"
-            location="Ward 88, D-Block Lane"
-            desc="5 contiguous lamp posts out. Merged 3 resident reports. Lineman team scheduled tonight."
-            meta1="Triaged 40 mins ago"
-            meta2="12 Citizens Impacted"
-          />
+          {loading ? (
+            <div className="p-12 text-center text-gray-500 font-medium flex flex-col items-center gap-3">
+              <Loader2 className="animate-spin text-blue-500" size={32} />
+              Loading live feed...
+            </div>
+          ) : displayItems.length === 0 ? (
+            <div className="p-12 text-center text-gray-500 font-medium">No recent complaints found for this area.</div>
+          ) : (
+            displayItems.map(c => (
+              <LiveFeedItem
+                key={c.id}
+                status={c.status || 'Submitted'}
+                token={c.token}
+                title={c.title}
+                location={c.ward ? `${c.ward}${c.address ? `, ${c.address}` : ''}` : c.address || 'Location specified'}
+                desc={c.description}
+                meta1={`${c.status === 'Resolved' ? 'Resolved' : 'Reported'} ${formatTimeAgo(c.createdAt)}`}
+                meta2={c.reportCount > 1 ? `${c.reportCount} Citizens Impacted` : 'New Report'}
+              />
+            ))
+          )}
         </div>
       </div>
     </section>
